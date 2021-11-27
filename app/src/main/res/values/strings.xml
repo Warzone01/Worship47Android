@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Worship47</string>
+    <string name="welcome_text">Добро пожаловать</string>
+    <string name="log_in">Войти</string>
+    <string name="registration">Регистрация</string>
+    <string name="email">Адресс электронной почты</string>
+    <string name="first_password">Пароль</string>
+    <string name="second_password">Повторите пароль</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="remember_login">Запомнить меня</string>
+    <string name="incorrect_password">Неверный пароль</string>
+    <string name="passwords_not_the_same">Пароли не совпадают</string>
+    <string name="lost_password">Забыли пароль?</string>
+    <string name="dont_have_acc">Не зарегистрированны?</string>
+    <string name="already_have_acc">Уже зарегистрированны?</string>
+    <string name="first_hello_title">Удобство использования</string>
+    <string name="first_hello_description">Песнями гораздо удобнее пользоваться, когда они все собраны вместе</string>
+    <string name="second_hello_title">Поиск по любому слову</string>
+    <string name="second_hello_description">Песни удобно искать не только по названию, но и по словам или фразам, которые упоминаются в ней</string>
+    <string name="third_hello_title">Разделение по категориям</string>
+    <string name="third_hello_description">Песни разделены по категорям, благодаря чему удобно найти нужную</string>
+    <string name="all_songs">Все песни</string>
+    <string name="main_songs">Основные песни</string>
+    <string name="christmas_songs">Рождественские песни</string>
+    <string name="easter_songs">Пасхальные песни</string>
+    <string name="children_songs">Детские песни</string>
+</resources>

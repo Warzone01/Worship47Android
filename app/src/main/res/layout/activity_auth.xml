@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".auth.AuthActivity">
+
+    <!--основной лэйоут-->
+    <LinearLayout
+        android:id="@+id/ll_auth_activity_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <ImageView
+                android:id="@+id/iv_header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <!--блок привествия-->
+            <FrameLayout
+                android:id="@+id/ll_header_auth_activity"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/smoke"
+                android:animateLayoutChanges="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/ll_welcome_text_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true"
+                    android:layout_gravity="center">
+
+                    <!--текст с названием приложения-->
+                    <TextView
+                        android:id="@+id/tv_header_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/app_name"
+                        android:textSize="35sp"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"
+                        android:visibility="visible"/>
+
+                    <!--текст с привествием-->
+                    <TextView
+                        android:id="@+id/tv_header_welcome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/welcome_text"
+                        android:textColor="@color/white"
+                        android:textSize="35sp"
+                        android:layout_gravity="center"
+                        android:visibility="visible"/>
+
+                </LinearLayout>
+
+                <!--текст с названием приложения-->
+                <TextView
+                    android:id="@+id/tv_registration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/registration"
+                    android:textSize="35sp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center|center_vertical"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!--поле ввода электронной почты-->
+        <LinearLayout
+            android:id="@+id/ll_input_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:background="@null"
+                android:textSize="18sp"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email"/>
+
+            <View
+                android:id="@+id/underline_email"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/under_line"/>
+
+        </LinearLayout>
+
+        <!--поле ввода мени-->
+        <LinearLayout
+            android:id="@+id/ll_input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:background="@null"
+                android:textSize="18sp"
+                android:inputType="textPersonName"
+                android:hint="@string/first_name"/>
+
+            <View
+                android:id="@+id/underline_name"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/under_line"/>
+
+        </LinearLayout>
+
+        <!--поле ввода фамилии-->
+        <LinearLayout
+            android:id="@+id/ll_input_firstname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/et_firstname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:background="@null"
+                android:textSize="18sp"
+                android:inputType="textPersonName"
+                android:hint="@string/last_name"/>
+
+            <View
+                android:id="@+id/underline_firstname"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/under_line"/>
+
+        </LinearLayout>
+
+        <!--поле ввода пароля-->
+        <LinearLayout
+            android:id="@+id/ll_input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:background="@null"
+                android:textSize="18sp"
+                android:inputType="textPassword"
+                android:hint="@string/first_password"/>
+
+            <View
+                android:id="@+id/underline_password"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/under_line"/>
+
+        </LinearLayout>
+
+        <!--поле ввода повторения пароля-->
+        <LinearLayout
+            android:id="@+id/ll_input_repeat_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/et_password_repeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:background="@null"
+                android:textSize="18sp"
+                android:inputType="textPassword"
+                android:hint="@string/second_password"/>
+
+            <View
+                android:id="@+id/underline_password_repeat"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/under_line"/>
+
+        </LinearLayout>
+
+
+        <FrameLayout
+            android:id="@+id/fl_remember_me"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="horizontal"
+            android:animateLayoutChanges="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:animateLayoutChanges="true">
+                <CheckBox
+                    android:id="@+id/cb_remember_me"
+                    android:layout_width="30dp"
+                    android:layout_height="24dp"
+                    android:checked="true"
+                    android:layout_gravity="center_vertical|center"/>
+
+                <TextView
+                    android:id="@+id/tv_remember_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remember_login"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/ubuntu"
+                    android:textSize="15sp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_forgot_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lost_password"
+                android:fontFamily="@font/ubuntu"
+                android:textSize="15sp"
+                android:textColor="@color/main_orange"
+                android:layout_gravity="center_vertical|end"
+                android:visibility="visible"/>
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/log_in"
+            android:background="@drawable/bg_background"
+            android:fontFamily="@font/ubuntu_bold"
+            android:textSize="24sp"
+            android:paddingVertical="8dp"
+            android:visibility="visible"/>
+
+        <com.crystal.crystalpreloaders.widgets.CrystalPreloader
+            android:id="@+id/cp_preloader_auth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            app:crs_pl_style="skype_balls"
+            app:crs_pl_size="very_small"
+            app:crs_pl_fg_color="@color/main_orange"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/ll_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:id="@+id/tv_do_not_have_an_acc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dont_have_acc"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/ubuntu"
+                android:textSize="14sp"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/btn_registration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/main_orange"
+                android:fontFamily="@font/ubuntu"
+                android:textSize="14sp"
+                android:text="@string/registration"/>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
