@@ -14,4 +14,5 @@
     <color name="main_red">#FF4141</color>
     <color name="subtitle_text_color">#A3A3A3</color>
     <color name="appbar_color">#ECECEC</color>
+    <color name="padding">#66B8B7B7</color>
 </resources>

@@ -20,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        if (savedInstanceState != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
         initTabs()
     }
 

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.47239583333333335" />
         <entry key="../../../layout/custom_preview.xml" value="0.33" />
         <entry key="app/src/main/res/drawable-v24/under_line.xml" value="0.337037037037037" />
         <entry key="app/src/main/res/drawable/bg_btn_next.xml" value="0.21354166666666666" />
@@ -10,9 +11,12 @@
         <entry key="app/src/main/res/drawable/focused_under_line.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/drawable/ic_arrow_up.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/drawable/not_selected_indicator.xml" value="0.33240740740740743" />
+        <entry key="app/src/main/res/drawable/popup_padding_background.xml" value="0.2526041666666667" />
         <entry key="app/src/main/res/drawable/selected_indicator.xml" value="0.33240740740740743" />
+        <entry key="app/src/main/res/drawable/selected_indicator_circle.xml" value="0.30562595032944756" />
         <entry key="app/src/main/res/drawable/song_item.xml" value="0.2777777777777778" />
         <entry key="app/src/main/res/drawable/song_item_bg_grey.xml" value="0.2777777777777778" />
+        <entry key="app/src/main/res/drawable/top_popup_background.xml" value="0.30562595032944756" />
         <entry key="app/src/main/res/font/ubuntu.xml" value="0.337037037037037" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.35520833333333335" />
@@ -22,10 +26,11 @@
         <entry key="app/src/main/res/layout/fragment_third.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/main_bar.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/song_item.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/top_popup_menu.xml" value="0.3828571428571429" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

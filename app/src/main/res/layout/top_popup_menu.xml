@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_top_popup_container"
+    android:animateLayoutChanges="true"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/padding_under_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/padding"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        android:background="@drawable/top_popup_background"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!--все песни-->
+        <LinearLayout
+            android:id="@+id/ll_item_all_songs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginVertical="16dp"
+                android:text="@string/all_songs"
+                android:textSize="20sp"
+                android:fontFamily="@font/ubuntu"/>
+
+            <ImageView
+                android:id="@+id/all_indicator"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:visibility="visible"
+                android:background="@drawable/selected_indicator_circle"
+                android:contentDescription="@string/all_songs"/>
+
+        </LinearLayout>
+
+        <!--разделитель-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@drawable/under_line"
+            />
+
+        <!--основные песни-->
+        <LinearLayout
+            android:id="@+id/ll_item_main_songs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginVertical="16dp"
+                android:text="@string/main_songs"
+                android:textSize="20sp"
+                android:fontFamily="@font/ubuntu"/>
+
+            <ImageView
+                android:id="@+id/main_indicator"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                android:background="@drawable/selected_indicator_circle"
+                android:contentDescription="@string/all_songs"/>
+
+        </LinearLayout>
+
+        <!--разделитель-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@drawable/under_line"
+            />
+
+        <!--рождественские песни-->
+        <LinearLayout
+            android:id="@+id/ll_item_christmas_songs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginVertical="16dp"
+                android:text="@string/christmas_songs"
+                android:textSize="20sp"
+                android:fontFamily="@font/ubuntu"/>
+
+            <ImageView
+                android:id="@+id/christmas_indicator"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                android:background="@drawable/selected_indicator_circle"
+                android:contentDescription="@string/all_songs"/>
+
+        </LinearLayout>
+
+        <!--разделитель-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@drawable/under_line"
+            />
+
+        <!--пасхальные песни-->
+        <LinearLayout
+            android:id="@+id/ll_item_easter_songs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginVertical="16dp"
+                android:text="@string/easter_songs"
+                android:textSize="20sp"
+                android:fontFamily="@font/ubuntu"/>
+
+            <ImageView
+                android:id="@+id/easter_indicator"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                android:background="@drawable/selected_indicator_circle"
+                android:contentDescription="@string/all_songs"/>
+
+        </LinearLayout>
+
+        <!--разделитель-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@drawable/under_line"
+            />
+
+        <!--детские песни-->
+        <LinearLayout
+            android:id="@+id/ll_item_children_songs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_marginVertical="16dp"
+                android:text="@string/children_songs"
+                android:textSize="20sp"
+                android:fontFamily="@font/ubuntu"/>
+
+            <ImageView
+                android:id="@+id/children_indicator"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                android:background="@drawable/selected_indicator_circle"
+                android:contentDescription="@string/all_songs"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
