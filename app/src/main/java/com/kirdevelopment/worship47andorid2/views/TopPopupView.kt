@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit
 class TopPopupView(context: Context, attrs: AttributeSet? = null): LinearLayout(context, attrs) {
 
     private var binding: TopPopupMenuBinding
-    var selectedItem = 0
 
     init {
         binding = TopPopupMenuBinding.inflate(LayoutInflater.from(context))
@@ -37,8 +36,7 @@ class TopPopupView(context: Context, attrs: AttributeSet? = null): LinearLayout(
         return findViewById<LinearLayout>(R.id.ll_item_all_songs).clicks()
             .throttleFirst(300L, TimeUnit.MILLISECONDS)
             .doOnNext {
-                selectedItem = 0
-                setSelected()
+                setSelected(0)
             }
     }
 
@@ -47,8 +45,7 @@ class TopPopupView(context: Context, attrs: AttributeSet? = null): LinearLayout(
         return findViewById<LinearLayout>(R.id.ll_item_main_songs).clicks()
             .throttleFirst(300L, TimeUnit.MILLISECONDS)
             .doOnNext {
-                selectedItem = 1
-                setSelected()
+                setSelected(1)
             }
     }
 
@@ -57,8 +54,7 @@ class TopPopupView(context: Context, attrs: AttributeSet? = null): LinearLayout(
         return findViewById<LinearLayout>(R.id.ll_item_christmas_songs).clicks()
             .throttleFirst(300L, TimeUnit.MILLISECONDS)
             .doOnNext {
-                selectedItem = 2
-                setSelected()
+                setSelected(2)
             }
     }
 
@@ -67,8 +63,7 @@ class TopPopupView(context: Context, attrs: AttributeSet? = null): LinearLayout(
         return findViewById<LinearLayout>(R.id.ll_item_easter_songs).clicks()
             .throttleFirst(300L, TimeUnit.MILLISECONDS)
             .doOnNext {
-                selectedItem = 3
-                setSelected()
+                setSelected(3)
             }
     }
 
@@ -77,13 +72,12 @@ class TopPopupView(context: Context, attrs: AttributeSet? = null): LinearLayout(
         return findViewById<LinearLayout>(R.id.ll_item_children_songs).clicks()
             .throttleFirst(300L, TimeUnit.MILLISECONDS)
             .doOnNext {
-                selectedItem = 4
-                setSelected()
+                setSelected(4)
             }
     }
 
     // устанавливает выбранный пункт
-    private fun setSelected() {
+    private fun setSelected(selectedItem: Int) {
         when (selectedItem) {
 
             0 -> {

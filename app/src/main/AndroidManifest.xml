@@ -10,13 +10,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Worship47Andorid2">
         <activity
+            android:name=".detailSong.DetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".auth.AuthActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".home.HomeActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".startScreen.MainActivity"
             android:exported="true"
