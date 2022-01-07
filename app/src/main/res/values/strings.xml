@@ -25,4 +25,6 @@
     <string name="christmas_songs">Рождественские песни</string>
     <string name="easter_songs">Пасхальные песни</string>
     <string name="children_songs">Детские песни</string>
+    <string name="author">Автор: </string>
+    <string name="empty_list">Список песен пуст</string>
 </resources>
