@@ -4,12 +4,15 @@
     android:id="@+id/cl_song_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="24dp"
+    android:layout_marginBottom="16dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="5dp"
+    android:background="#63EFEFEF"
     android:animateLayoutChanges="true"
     android:elevation="5dp">
 
     <!--кнопка свернуть/развернуть элемент-->
-    <View
+    <FrameLayout
         android:id="@+id/iv_expand_element"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -17,32 +20,45 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/iv_expand_arrow_down"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_gravity="center|center_horizontal"
             android:src="@drawable/ic_arrow_down_expand" />
-    </View>
+
+        <ImageView
+            android:id="@+id/iv_expand_arrow_up"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            android:layout_gravity="center|center_horizontal"
+            android:src="@drawable/ic_arrow_up_expand" />
+    </FrameLayout>
 
     <!--Название песни на Русском-->
     <TextView
         android:id="@+id/tv_song_item_ru_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="24dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:fontFamily="@font/ubuntu_bold"
         android:maxLines="1"
         android:text="Благ Господь"
+        android:includeFontPadding="false"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/iv_expand_element"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--разделительная линия-->
-    <View
+    <ImageView
         android:id="@+id/divider_not_expanded"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -61,14 +77,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:fontFamily="@font/ubuntu"
         android:maxLines="1"
         android:text="God is Good"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/iv_expand_element"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,18 +95,20 @@
         android:id="@+id/tv_main_chord_not_expanded"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/ubuntu_bold"
         android:text="E"
         android:textColor="@color/main_orange"
-        android:textSize="18sp"
+        android:textSize="26sp"
         android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/iv_expand_element"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/divider_not_expanded"
+        app:layout_constraintEnd_toEndOf="@id/iv_expand_element" />
 
     <!--разделительная линия-->
-    <View
+    <ImageView
         android:id="@+id/divider_expanded"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -131,7 +149,7 @@
         android:maxLines="4"
         android:text="Благ Господь,\nПоём об этом,\nБлаг Господь,\nВ Нём праздник наш"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

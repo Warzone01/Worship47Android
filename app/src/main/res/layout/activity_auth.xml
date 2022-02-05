@@ -321,6 +321,18 @@
             app:crs_pl_fg_color="@color/main_orange"
             android:visibility="gone"/>
 
+        <TextView
+            android:id="@+id/text_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textSize="15sp"
+            android:visibility="gone"
+            android:text="@string/incorrect_password"
+            android:fontFamily="@font/ubuntu_bold"
+            android:textColor="@color/main_red"/>
+
     </LinearLayout>
 
     <FrameLayout

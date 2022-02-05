@@ -16,12 +16,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_appbar" />
 
+    <com.crystal.crystalpreloaders.widgets.CrystalPreloader
+        android:id="@+id/home_preloader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:crs_pl_style="ball_pulse_sync"
+        app:crs_pl_size="very_small"
+        app:crs_pl_fg_color="@color/main_orange"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/home_appbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <TextView
         android:id="@+id/tv_empty_list_stub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/ubuntu"
         android:text="@string/empty_list"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
