@@ -1,6 +1,8 @@
 package com.kirdevelopment.worship47andorid2.startScreen
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
@@ -11,19 +13,30 @@ import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.auth.AuthActivity
 import com.kirdevelopment.worship47andorid2.databinding.ActivityAuthBinding
 import com.kirdevelopment.worship47andorid2.databinding.ActivityMainBinding
+import com.kirdevelopment.worship47andorid2.home.HomeActivity
+import com.kirdevelopment.worship47andorid2.utils.Constants
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var mKey: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (savedInstanceState != null) {
-            startActivity(Intent(this, MainActivity::class.java))
+        mKey = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val isNeedAuth = mKey?.getString(Constants.TOKEN, "") == ""
+        if (!isNeedAuth) {
+            startActivity(Intent(this@MainActivity, HomeActivity::class.java))
+            finish()
+        } else {
+            initTabs()
         }
-        initTabs()
     }
 
     // определяем вкладки

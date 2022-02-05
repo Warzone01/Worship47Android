@@ -9,7 +9,7 @@
     <string name="first_name">Имя</string>
     <string name="last_name">Фамилия</string>
     <string name="remember_login">Запомнить меня</string>
-    <string name="incorrect_password">Неверный пароль</string>
+    <string name="incorrect_password">Неверный адрес электронной почты или пароль</string>
     <string name="passwords_not_the_same">Пароли не совпадают</string>
     <string name="lost_password">Забыли пароль?</string>
     <string name="dont_have_acc">Не зарегистрированны?</string>

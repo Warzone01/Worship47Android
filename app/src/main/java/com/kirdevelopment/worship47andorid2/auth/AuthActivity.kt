@@ -1,8 +1,11 @@
 package com.kirdevelopment.worship47andorid2.auth
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
@@ -11,12 +14,18 @@ import androidx.core.view.isVisible
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.databinding.ActivityAuthBinding
 import com.kirdevelopment.worship47andorid2.home.HomeActivity
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
+import com.kirdevelopment.worship47andorid2.interactors.AuthInteractor
+import com.kirdevelopment.worship47andorid2.models.AuthKey
+import com.kirdevelopment.worship47andorid2.utils.Constants.APP_PREFERENCES
+import com.kirdevelopment.worship47andorid2.utils.Constants.TOKEN
+import kotlinx.coroutines.*
 
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthBinding
+    private val authInteractor = AuthInteractor()
+    private val model = AuthViewModel()
+    private var mKey: SharedPreferences? = null
 
     var dp1 = 0f
     var screenKey = 0
@@ -29,12 +38,16 @@ class AuthActivity : AppCompatActivity() {
         dp1 = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, 1f, resources.displayMetrics
         )
-
-
+        mKey = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     override fun onResume() {
         super.onResume()
+        val isNeedAuth = mKey?.getString(TOKEN, "") == ""
+        if (!isNeedAuth) {
+            startActivity(Intent(this@AuthActivity, HomeActivity::class.java))
+            finish()
+        }
         initFocus()
         setClicks()
     }
@@ -50,14 +63,7 @@ class AuthActivity : AppCompatActivity() {
 
                     binding.etPassword.text.isEmpty() -> setErrorUnderLine(binding.underlinePassword)
 
-                    else -> runBlocking {
-                        setLoadingSpinner()
-                        withTimeout(5000L) {
-                            startActivity(Intent(this@AuthActivity, HomeActivity::class.java))
-                            finish()
-                        }
-                    }
-
+                    else -> auth()
                 }
             }
         }
@@ -68,6 +74,42 @@ class AuthActivity : AppCompatActivity() {
                     0 -> initRegistration()
 
                     else -> initAuth()
+                }
+            }
+        }
+    }
+
+    // метод авторизации
+    private fun auth() {
+        val login: String = binding.etEmail.text.toString()
+        val password: String = binding.etPassword.text.toString()
+        var key:String?
+        GlobalScope.launch(Dispatchers.IO) {
+            key = authInteractor.getAuthToken(
+                login = login,
+                password = password
+            )
+            withContext(Dispatchers.Main) {
+                if (key != null) {
+                    model.key.value = key
+                    val intent = Intent(this@AuthActivity, HomeActivity::class.java)
+
+                    if (binding.cbRememberMe.isChecked) {
+                        val editor = mKey?.edit()
+                        editor?.putString(TOKEN, key.toString())
+                        editor?.apply()
+                    } else {
+                        intent.putExtra(TOKEN, key.toString())
+                    }
+                    setLoadingSpinner()
+                    withTimeout(5000L) {
+                        startActivity(intent)
+                        finish()
+                    }
+                } else {
+                    binding.textError.visibility = View.VISIBLE
+                    setErrorUnderLine(binding.underlinePassword)
+                    setErrorUnderLine(binding.underlineEmail)
                 }
             }
         }

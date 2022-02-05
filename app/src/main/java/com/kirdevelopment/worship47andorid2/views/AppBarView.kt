@@ -28,6 +28,11 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         return findViewById<LinearLayout>(R.id.ll_appbar_header).clicks()
     }
 
+    // установка слушателя нажатий на кноку меню
+    fun setLoginClicks(): Observable<Unit> {
+        return findViewById<LinearLayout>(R.id.iv_info).clicks()
+    }
+
     fun setHeader(text: String) {
         findViewById<TextView>(R.id.tv_appbar_header_text).text = text
     }
