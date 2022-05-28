@@ -27,4 +27,9 @@
     <string name="children_songs">Детские песни</string>
     <string name="author">Автор: </string>
     <string name="empty_list">Список песен пуст</string>
+    <string name="ru_text">Русский</string>
+    <string name="eng_text">Английский</string>
+    <string name="chord_text">Аккорды</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

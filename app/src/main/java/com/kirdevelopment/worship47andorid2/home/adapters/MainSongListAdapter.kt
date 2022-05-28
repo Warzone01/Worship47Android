@@ -1,6 +1,7 @@
 package com.kirdevelopment.worship47andorid2.home.adapters
 
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +35,9 @@ class MainSongListAdapter(private val songs: ArrayList<Result>) :
         songs.addAll(if (category != ALL_SONGS) {
             songsForSort.filter {
                 it.category.map { element -> element.title }.contains(category)
-            }
+            }.sortedBy { it.title }
         } else {
-            songsForSort
+            songsForSort.sortedBy { it.title }
         })
         notifyDataSetChanged()
     }
@@ -44,6 +45,7 @@ class MainSongListAdapter(private val songs: ArrayList<Result>) :
     // добавление первых песен в список
     fun addFirstSongs(songsList: ArrayList<Result>) {
         songs.addAll(songsList)
+        Log.d("Песни", songs.size.toString())
         notifyItemRangeInserted(itemCount, songsList.size)
     }
 
