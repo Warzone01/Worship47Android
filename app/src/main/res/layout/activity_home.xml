@@ -11,10 +11,48 @@
         android:id="@+id/rv_main_song_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_appbar" />
+        app:layout_constraintTop_toBottomOf="@id/search_layout" />
+
+    <LinearLayout
+        android:id="@+id/search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="13dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:elevation="5dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_appbar"
+        android:background="@drawable/search_background">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:src="@drawable/ic_search"/>
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:layout_margin="5dp"
+            android:hint="@string/search_text"
+            android:gravity="center_vertical"
+            android:importantForAutofill="no"
+            android:inputType="text" />
+
+    </LinearLayout>
 
     <com.crystal.crystalpreloaders.widgets.CrystalPreloader
         android:id="@+id/home_preloader"

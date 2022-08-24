@@ -19,6 +19,7 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     var binding: MainBarBinding
     var isPopupOpen: Boolean = false
+    var isSearchMode: Boolean = false
 
     init {
         binding = MainBarBinding.inflate(LayoutInflater.from(context))
@@ -45,6 +46,17 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         findViewById<TextView>(R.id.tv_appbar_header_text).text = text
     }
 
+    // установить иконку поиска
+    fun setSearchIcon() {
+        val searchButton = findViewById<ImageView>(R.id.info)
+
+        if (isSearchMode) {
+            findViewById<ImageView>(R.id.info).setImageResource(R.drawable.ic_search_off)
+        } else {
+            findViewById<ImageView>(R.id.info).setImageResource(R.drawable.ic_search)
+        }
+    }
+
     // установить маркер для заголовка
     fun setHeaderMarker() {
         if (isPopupOpen) {
@@ -67,8 +79,8 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
         if (isHome) {
             marker.visibility = View.VISIBLE
-            rightButton.visibility = View.GONE
             leftButton.setBackgroundResource(R.drawable.ic_menu)
+            rightButton.setImageResource(R.drawable.ic_search)
             title.text = titleText
             subtitle.visibility = View.GONE
             setHeaderMarker()
@@ -77,6 +89,7 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             subtitle.visibility = View.VISIBLE
             rightButton.visibility = View.VISIBLE
             leftButton.setImageResource(R.drawable.ic_back)
+            rightButton.setImageResource(R.drawable.ic_info)
             title.text = titleText
             subtitle.text = subtitleText
         }

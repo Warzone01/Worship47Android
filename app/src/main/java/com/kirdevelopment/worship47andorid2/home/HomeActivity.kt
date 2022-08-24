@@ -5,7 +5,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
 import android.view.View
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kirdevelopment.worship47andorid2.R
@@ -24,6 +27,7 @@ import com.kirdevelopment.worship47andorid2.utils.Constants.MAIN_SONGS
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.kirdevelopment.worship47andorid2.utils.Constants.TOKEN
+import com.kirdevelopment.worship47andorid2.utils.KeyboardUtils
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,7 +35,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClickListener {
+class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClickListener, KeyboardUtils {
 
     private lateinit var binding: ActivityHomeBinding
     private var model = HomeViewModel()
@@ -63,6 +67,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
         }
 
         setClicks()
+        setSearch()
 
         // следит за списком песен
         model.songsList.observe(this, {
@@ -100,6 +105,24 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
         intent.putExtra(SONG_ID, song.id)
         intent.putExtra(SONG, model.parseSongsToDb(song))
         startActivity(intent)
+    }
+
+    // настраивает поиск по песням
+    private fun setSearch() {
+
+        // если текст поиска не пустой то при перезапуске активности не сбрасываем поиск
+        if (binding.etSearch.text.toString()!="") {
+            searchSong(binding.etSearch.text.toString())
+        }
+
+        // следит за обновлением текста в строке поиска
+        binding.etSearch.doOnTextChanged { text, _, _, count ->
+            if (count >= 1) {
+                searchSong(text.toString())
+            } else {
+                updateSongs()
+            }
+        }
     }
 
     // устанавливает клики
@@ -199,23 +222,35 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     }
                 }
 
-            // устанавливает клик на кнопку выйти
+            // устанавливает клик на кнопку поиска
             setLoginClicks()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    if (mKey?.getString(TOKEN, "") != "") {
-                        val editor = mKey?.edit()
-                        editor?.remove(TOKEN)
-                        editor?.clear()
-                        editor?.apply()
+                    if (isSearchMode) {
+                        this@HomeActivity.binding.searchLayout.visibility = View.GONE
+                        this@HomeActivity.binding.etSearch.text = "" as? Editable
+                        updateSongs()
+                        hideKeyboard()
+                        isSearchMode = false
+                    } else {
+                        this@HomeActivity.binding.searchLayout.visibility = View.VISIBLE
+                        this@HomeActivity.binding.etSearch.requestFocus()
+                        isSearchMode = true
                     }
-                    startActivity(
-                        Intent(this@HomeActivity, AuthActivity::class.java)
-                    )
-                    finish()
                 }
         }
+//  этот код, чтобы можно было выйти, просто сохранён до лучших времён
+//        if (mKey?.getString(TOKEN, "") != "") {
+//            val editor = mKey?.edit()
+//            editor?.remove(TOKEN)
+//            editor?.clear()
+//            editor?.apply()
+//        }
+//        startActivity(
+//            Intent(this@HomeActivity, AuthActivity::class.java)
+//        )
+//        finish()
     }
 
     // получить песни
@@ -246,6 +281,11 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
     // обновляет и сортирует песни
     private fun updateSongs() {
         model.songsList.value?.let { adapter.sortedSongs(category, it) }
+    }
+
+    // поиск по песням
+    private fun searchSong(text: String) {
+        model.songsList.value?.let { adapter.searchSong(text, it) }
     }
 
     override fun onChanged(t: ArrayList<Result>?) {

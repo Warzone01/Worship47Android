@@ -3,7 +3,7 @@
     <string name="welcome_text">Добро пожаловать</string>
     <string name="log_in">Войти</string>
     <string name="registration">Регистрация</string>
-    <string name="email">Адресс электронной почты</string>
+    <string name="email">Адрес электронной почты</string>
     <string name="first_password">Пароль</string>
     <string name="second_password">Повторите пароль</string>
     <string name="first_name">Имя</string>
@@ -30,6 +30,7 @@
     <string name="ru_text">Русский</string>
     <string name="eng_text">Английский</string>
     <string name="chord_text">Аккорды</string>
+    <string name="search_text">Введите текст для поиска</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
