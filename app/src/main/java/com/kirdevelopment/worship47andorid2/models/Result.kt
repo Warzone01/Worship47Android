@@ -7,7 +7,7 @@ data class Result(
     val chordKey2: String? = null,
     val chords: String? = null,
     val chordsFile1: String? = null,
-    val chordsFile2: Any? = null,
+    val chordsFile2: String? = null,
     val created: String? = null,
     val difficult: String? = null,
     val id: Int = 0,

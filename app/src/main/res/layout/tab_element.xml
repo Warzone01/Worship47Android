@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:text="@string/ru_text"
         android:textSize="20sp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_gravity="center"
         android:fontFamily="@font/ubuntu_bold"
         android:textColor="@color/main_orange"/>

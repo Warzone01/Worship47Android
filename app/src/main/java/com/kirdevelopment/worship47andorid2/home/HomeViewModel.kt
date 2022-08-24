@@ -1,39 +1,135 @@
 package com.kirdevelopment.worship47andorid2.home
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.kirdevelopment.worship47andorid2.database.SongDatabase
+import com.kirdevelopment.worship47andorid2.database.SongsEntity
+import com.kirdevelopment.worship47andorid2.database.StringConverter
 import com.kirdevelopment.worship47andorid2.interactors.MainInteractor
 import com.kirdevelopment.worship47andorid2.models.Result
 import kotlinx.coroutines.*
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel : ViewModel() {
     val songsList: MutableLiveData<ArrayList<Result>> = MutableLiveData()
     private val mainInteractor = MainInteractor()
     var songs: ArrayList<Result> = ArrayList()
     var nextSongs: ArrayList<Result> = ArrayList()
+    private val lastPage = "0"
 
     // получить первые песни
-    fun getFirstSongs(token: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-            songs.addAll(mainInteractor.getAllSongs(token))
-            withContext(Dispatchers.Main) {
-                songsList.value = songs
+    fun getFirstSongs(token: String, context: Context) {
+        val database: SongDatabase = SongDatabase.getDatabase(context)
+        MainScope().launch(Dispatchers.IO) {
+            val songsDb = database.songsDao().getAllSongs()
+            if (songsDb.isEmpty()) {
+                songs.addAll(mainInteractor.getAllSongs(token))
+                getNextSongs(token, context)
+            } else {
+                withContext(Dispatchers.Main) {
+                    for (i in songsDb) {
+                        songs.add(parseDBSongsToStore(i))
+                    }
+                    songsList.value = songs
+                    songsList.notifyObserver()
+                }
             }
         }
     }
 
     // получить пагинацию песен
-    fun getNextSongs(token: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-            while (!mainInteractor.page.isNullOrBlank()) {
+    private fun getNextSongs(token: String, context: Context) {
+        val database: SongDatabase = SongDatabase.getDatabase(context)
+        MainScope().launch(Dispatchers.IO) {
+            while (!mainInteractor.page.isNullOrBlank() && mainInteractor.page != lastPage) {
                 nextSongs.addAll(mainInteractor.getNextSongs(token))
-                withContext(Dispatchers.Main) {
-                    songsList.value?.addAll(nextSongs)
-                    Log.d("Вызвалось", "Список новых песен ${nextSongs.size}, глобальный список ${songsList.value?.size}")
+
+                // добавляет в базу данных песни
+                for (i in nextSongs) {
+                    database.songsDao().insertSongs(parseSongsToDb(i))
                 }
                 nextSongs.clear()
             }
+            val dbSong = database.songsDao().getAllSongs()
+            withContext(Dispatchers.Main) {
+                for (i in dbSong) {
+                    songs.add(parseDBSongsToStore(i))
+                }
+                songsList.value = songs
+                songsList.notifyObserver()
+            }
         }
+    }
+
+    // конвертирует полученные песни для базы данных
+    fun parseSongsToDb(song: Result): SongsEntity {
+        return SongsEntity(
+            songId = song.id,
+            songChords = song.chords ?: "",
+            songTextEng = song.text_eng ?: "",
+            songTextRu = song.text,
+            songNameEng = song.title_eng ?: "",
+            songNameRu = song.title,
+            songCategorySlug = StringConverter.fromListToString(song.category.map { it.slug }
+                ?: emptyList()),
+            author = song.author ?: "",
+            songKeys = StringConverter.fromListToString(
+                listOf(
+                    song.chordKey1 ?: "",
+                    song.chordKey2 ?: ""
+                )
+            ),
+            songTranslators = StringConverter.fromListToString(song.translator.map { it.name }
+                ?: emptyList()),
+            songVideoIds = StringConverter.fromListToString(
+                listOf(
+                    song.ytb_id1 ?: "",
+                    song.ytb_id2 ?: "",
+                    song.ytb_id3 ?: ""
+                )
+            ),
+            songExpanded = song.songExpanded,
+            presentation = song.presentation ?: "",
+            textFileLink = song.text_file ?: "",
+            difficult = song.difficult ?: "",
+            chordsFilesLinks = StringConverter.fromListToString(
+                listOf(
+                    song.chordsFile1 ?: "",
+                    song.chordsFile2 ?: ""
+                )
+            ),
+        )
+    }
+
+    // конвертирует базу данныйх в лайвдату
+    private fun parseDBSongsToStore(songsEntity: SongsEntity): Result {
+        return Result(
+            author = songsEntity.author,
+            category = emptyList(),
+            chordKey1 = StringConverter.fromStringToList(songsEntity.songKeys)[0],
+            chordKey2 = StringConverter.fromStringToList(songsEntity.songKeys)[1],
+            chords = songsEntity.songChords,
+            chordsFile1 = StringConverter.fromStringToList(songsEntity.chordsFilesLinks)[0],
+            chordsFile2 = StringConverter.fromStringToList(songsEntity.chordsFilesLinks)[1],
+            difficult = songsEntity.difficult,
+            id = songsEntity.songId ?: 0,
+            main_key = StringConverter.fromStringToList(songsEntity.songKeys)[0],
+            presentation = songsEntity.presentation,
+            text = songsEntity.songTextRu,
+            text_eng = songsEntity.songTextEng,
+            text_file = songsEntity.textFileLink,
+            title = songsEntity.songNameRu,
+            title_eng = songsEntity.songNameEng,
+            translator = emptyList(),
+            ytb_id1 = StringConverter.fromStringToList(songsEntity.songVideoIds)[0],
+            ytb_id2 = StringConverter.fromStringToList(songsEntity.songVideoIds)[1],
+            ytb_id3 = StringConverter.fromStringToList(songsEntity.songVideoIds)[2],
+            songExpanded = songsEntity.songExpanded
+        )
+    }
+
+    // сообщает обзёрверу, что список песен обновился
+    private fun <T> MutableLiveData<T>.notifyObserver() {
+        this.value = this.value
     }
 }

@@ -1,14 +1,20 @@
 package com.kirdevelopment.worship47andorid2.detailSong.fragments
 
 import android.os.Bundle
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.kirdevelopment.worship47andorid2.R
+import com.kirdevelopment.worship47andorid2.database.SongsEntity
+import com.kirdevelopment.worship47andorid2.databinding.FragmentEngTabBinding
+import com.kirdevelopment.worship47andorid2.detailSong.DetailViewModel
 
 
-class EngTabFragment : Fragment() {
+class EngTabFragment(private var song: SongsEntity) : Fragment() {
+
+    private lateinit var binding: FragmentEngTabBinding
+    private val model = DetailViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +24,12 @@ class EngTabFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_eng_tab, container, false)
+        binding = FragmentEngTabBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.tvEngText.text = Html.fromHtml(song.songTextEng)
     }
 }

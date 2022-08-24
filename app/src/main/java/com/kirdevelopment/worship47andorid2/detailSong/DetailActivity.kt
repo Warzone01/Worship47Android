@@ -2,44 +2,65 @@ package com.kirdevelopment.worship47andorid2.detailSong
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewpager2.widget.ViewPager2
 import com.kirdevelopment.worship47andorid2.R
+import com.kirdevelopment.worship47andorid2.database.SongsEntity
 import com.kirdevelopment.worship47andorid2.databinding.ActivityDetailBinding
 import com.kirdevelopment.worship47andorid2.models.Result
+import com.kirdevelopment.worship47andorid2.utils.Constants.SONG
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONGS_NAME
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONGS_SUBTITLE
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONGS_TEXT
+import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
+    private val model = DetailViewModel()
+    var song: SongsEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setTabsText()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        model.songId.value = intent.getIntExtra(SONG_ID, 0)
+        song = intent.getSerializableExtra(SONG) as SongsEntity
     }
 
     override fun onResume() {
+        model.getSong(this)
         super.onResume()
-        initTabs()
-        val songsTitle = intent.getStringExtra(SONGS_NAME)
-        val songsSubtitle = intent.getStringExtra(SONGS_SUBTITLE)
-        val songsText = intent.getStringExtra(SONGS_TEXT)
-        binding.homeAppbar.changeMainBar(isHome = false, songsTitle ?: "", songsSubtitle ?: "")
+        binding.homeAppbar.changeMainBar(
+            isHome = false,
+            titleText = song?.songNameRu ?: "",
+            subtitleText = song?.songNameEng ?: ""
+        )
         binding.homeAppbar.setLmClicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
             .autoDispose(scope()).subscribe {
                 finish()
             }
+
+        initTabs()
     }
 
     // создаёт вкладки
     private fun initTabs() {
-        binding.vpSongText.adapter = DetailSongTabsAdapter(supportFragmentManager, lifecycle)
+        binding.vpSongText.adapter = DetailSongTabsAdapter(
+            fm = supportFragmentManager,
+            lifecycle = lifecycle,
+            song = song ?: SongsEntity())
         binding.vpSongText.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
