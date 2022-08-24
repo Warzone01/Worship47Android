@@ -2,25 +2,16 @@ package com.kirdevelopment.worship47andorid2.detailSong
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewpager2.widget.ViewPager2
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.database.SongsEntity
 import com.kirdevelopment.worship47andorid2.databinding.ActivityDetailBinding
-import com.kirdevelopment.worship47andorid2.models.Result
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG
-import com.kirdevelopment.worship47andorid2.utils.Constants.SONGS_NAME
-import com.kirdevelopment.worship47andorid2.utils.Constants.SONGS_SUBTITLE
-import com.kirdevelopment.worship47andorid2.utils.Constants.SONGS_TEXT
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 import java.util.concurrent.TimeUnit
 
 class DetailActivity : AppCompatActivity() {
