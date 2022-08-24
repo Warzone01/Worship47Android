@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.kirdevelopment.worship47andorid2.models.Category
+import com.kirdevelopment.worship47andorid2.models.Translator
 import java.io.Serializable
 
 @Entity(tableName = "songs")
@@ -18,29 +20,29 @@ data class SongsEntity(
     @ColumnInfo(name = "difficult") var difficult: String,
     @ColumnInfo(name = "presentation_download_link") var presentation: String,
     @ColumnInfo(name = "text_file_link") var textFileLink: String,
-    @ColumnInfo(name = "chords_files_links") var chordsFilesLinks: List<String>,
-    @ColumnInfo(name = "song_keys") var songKeys: List<String>,
-    @ColumnInfo(name = "song_video_ids") var songVideoIds: List<String>,
-    @ColumnInfo(name = "song_category_slugs") var songCategorySlug: List<String>,
-    @ColumnInfo(name = "song_translators") var songTranslators: List<String>,
+    @ColumnInfo(name = "chords_files_links") var chordsFilesLinks: String,
+    @ColumnInfo(name = "song_keys") var songKeys: String,
+    @ColumnInfo(name = "song_video_ids") var songVideoIds: String,
+    @ColumnInfo(name = "song_category_slugs") var songCategorySlug: String,
+    @ColumnInfo(name = "song_translators") var songTranslators: String,
     var songExpanded: Boolean
 ) : Serializable {
     constructor() : this(
-        null,
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        emptyList(),
-        emptyList(),
-        emptyList(),
-        emptyList(),
-        emptyList(),
-        false
+        songId = null,
+        songNameRu = "",
+        songNameEng = "",
+        songTextRu = "",
+        songTextEng = "",
+        songChords = "",
+        author = "",
+        difficult = "",
+        presentation = "",
+        textFileLink = "",
+        chordsFilesLinks = "",
+        songKeys = "",
+        songVideoIds = "",
+        songCategorySlug = "",
+        songTranslators = "",
+        songExpanded = false
     )
 }

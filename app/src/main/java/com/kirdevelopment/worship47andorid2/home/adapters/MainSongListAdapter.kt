@@ -6,16 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.kirdevelopment.worship47andorid2.R
-import com.kirdevelopment.worship47andorid2.database.SongsEntity
 import com.kirdevelopment.worship47andorid2.models.Result
-import androidx.lifecycle.ViewModel
 import com.kirdevelopment.worship47andorid2.utils.Constants.ALL_SONGS
 
-class MainSongListAdapter(private val songs: ArrayList<Result>) :
+class MainSongListAdapter(
+    private val songs: ArrayList<Result>,
+    private val songClickListener: SongClickListener
+) :
     RecyclerView.Adapter<MainSongListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,9 +35,9 @@ class MainSongListAdapter(private val songs: ArrayList<Result>) :
         songs.addAll(if (category != ALL_SONGS) {
             songsForSort.filter {
                 it.category.map { element -> element.title }.contains(category)
-            }
+            }.sortedBy { it.title }
         } else {
-            songsForSort
+            songsForSort.sortedBy { it.title }
         })
         notifyDataSetChanged()
     }
@@ -63,6 +64,13 @@ class MainSongListAdapter(private val songs: ArrayList<Result>) :
                 songs[position].songExpanded = false
             }
         }
+
+        holder.songContainer.setOnClickListener {
+            songClickListener.onSongClicked(
+                song = songs[position],
+                position = position
+            )
+        }
     }
 
     override fun getItemCount(): Int {
@@ -84,6 +92,7 @@ class MainSongListAdapter(private val songs: ArrayList<Result>) :
         private val expandedArrowDown = items.findViewById<ImageView>(R.id.iv_expand_arrow_down)
         private val expandedArrowUp = items.findViewById<ImageView>(R.id.iv_expand_arrow_up)
         val expandButton = items.findViewById<FrameLayout>(R.id.iv_expand_element)
+        val songContainer = items.findViewById<ConstraintLayout>(R.id.cl_song_item_container)
 
         // расставляет нужную информацию по элементу
         fun bindSongs(songItem: Result) {

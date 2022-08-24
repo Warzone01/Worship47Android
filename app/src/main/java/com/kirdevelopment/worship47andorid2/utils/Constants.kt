@@ -14,6 +14,8 @@ object Constants {
 
     // параметры для intent
     const val TOKEN = "token"
+    const val SONG_ID = "song_id"
+    const val SONG = "song"
 
     // сохренение ключа
     const val APP_PREFERENCES = "app_preferences"

@@ -6,15 +6,14 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.auth.AuthActivity
-import com.kirdevelopment.worship47andorid2.auth.AuthViewModel
-import com.kirdevelopment.worship47andorid2.database.SongsEntity
 import com.kirdevelopment.worship47andorid2.databinding.ActivityHomeBinding
+import com.kirdevelopment.worship47andorid2.detailSong.DetailActivity
 import com.kirdevelopment.worship47andorid2.home.adapters.MainSongListAdapter
-import com.kirdevelopment.worship47andorid2.interactors.MainInteractor
-import com.kirdevelopment.worship47andorid2.models.AuthKey
+import com.kirdevelopment.worship47andorid2.home.adapters.SongClickListener
 import com.kirdevelopment.worship47andorid2.models.Result
 import com.kirdevelopment.worship47andorid2.utils.Constants.ALL_SONGS
 import com.kirdevelopment.worship47andorid2.utils.Constants.APP_PREFERENCES
@@ -22,33 +21,33 @@ import com.kirdevelopment.worship47andorid2.utils.Constants.CHILD_SONGS
 import com.kirdevelopment.worship47andorid2.utils.Constants.CHRISTMAS_SONG
 import com.kirdevelopment.worship47andorid2.utils.Constants.EASTER_SONGS
 import com.kirdevelopment.worship47andorid2.utils.Constants.MAIN_SONGS
+import com.kirdevelopment.worship47andorid2.utils.Constants.SONG
+import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.kirdevelopment.worship47andorid2.utils.Constants.TOKEN
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClickListener {
 
     private lateinit var binding: ActivityHomeBinding
-    private var list: List<SongsEntity> = emptyList()
-    private var mainInteractor = MainInteractor()
-    private var authModel = AuthViewModel()
+    private var model = HomeViewModel()
     private var category = ALL_SONGS
+    private var headerText = ALL_SONGS
     private var mKey: SharedPreferences? = null
     private var songs = ArrayList<Result>()
     private lateinit var adapter: MainSongListAdapter
+    private var songClickedPosition: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        adapter = MainSongListAdapter(songs)
+        adapter = MainSongListAdapter(songs, this)
         mKey = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         binding.rvMainSongList.layoutManager = LinearLayoutManager(this)
         binding.rvMainSongList.adapter = adapter
@@ -56,17 +55,28 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val intent: Intent = intent
-        setClicks()
-        if (category == ALL_SONGS) {
-            if (mKey?.getString(TOKEN, "") != "") {
-                getAllSongs(mKey?.getString(TOKEN, "") ?: "")
-            } else {
-                getAllSongs(intent.getStringExtra(TOKEN) ?: "")
-            }
-        } else {
-            updateSongs()
+
+        // если песен ещё нет, то запрашивает первые 10 песен
+        if (songs.isEmpty()) {
+            getFirstSongs()
+            binding.homePreloader
         }
+
+        setClicks()
+
+        // следит за списком песен
+        model.songsList.observe(this, {
+            it.let { result ->
+                endLoading()
+                adapter.sortedSongs(category, result)
+            }
+        })
+
+        // изменить название в шапке
+        binding.homeAppbar.changeMainBar(
+            isHome = true,
+            titleText = headerText
+        )
     }
 
     override fun onBackPressed() {
@@ -80,20 +90,29 @@ class HomeActivity : AppCompatActivity() {
             }
             return
         }
-
         super.onBackPressed()
+    }
+
+    override fun onSongClicked(song: Result, position: Int) {
+        super.onSongClicked(song, position)
+        songClickedPosition = position
+        val intent = Intent(this@HomeActivity, DetailActivity::class.java)
+        intent.putExtra(SONG_ID, song.id)
+        intent.putExtra(SONG, model.parseSongsToDb(song))
+        startActivity(intent)
     }
 
     // устанавливает клики
     private fun setClicks() {
-
         binding.topPopup.apply {
+
+            // слушает клик вне попапа
             setPaddingClick()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    binding.homeAppbar.isPopupOpen = false
                     visibility = View.GONE
+                    binding.homeAppbar.isPopupOpen = false
                     binding.homeAppbar.setHeaderMarker()
                 }
 
@@ -102,11 +121,11 @@ class HomeActivity : AppCompatActivity() {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    category = ALL_SONGS
-                    binding.homeAppbar.setHeader(resources.getString(R.string.all_songs))
-                    binding.homeAppbar.isPopupOpen = false
+                    setHeader(
+                        category = ALL_SONGS,
+                        headerText = resources.getString(R.string.all_songs)
+                    )
                     visibility = View.GONE
-                    binding.homeAppbar.setHeaderMarker()
                     updateSongs()
                 }
 
@@ -115,11 +134,11 @@ class HomeActivity : AppCompatActivity() {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    category = MAIN_SONGS
-                    binding.homeAppbar.setHeader(resources.getString(R.string.main_songs))
-                    binding.homeAppbar.isPopupOpen = false
+                    setHeader(
+                        category = MAIN_SONGS,
+                        headerText = resources.getString(R.string.main_songs)
+                    )
                     visibility = View.GONE
-                    binding.homeAppbar.setHeaderMarker()
                     updateSongs()
                 }
 
@@ -128,11 +147,11 @@ class HomeActivity : AppCompatActivity() {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    category = CHRISTMAS_SONG
-                    binding.homeAppbar.setHeader(resources.getString(R.string.christmas_songs))
-                    binding.homeAppbar.isPopupOpen = false
+                    setHeader(
+                        category = CHRISTMAS_SONG,
+                        headerText = resources.getString(R.string.christmas_songs)
+                    )
                     visibility = View.GONE
-                    binding.homeAppbar.setHeaderMarker()
                     updateSongs()
                 }
 
@@ -141,11 +160,11 @@ class HomeActivity : AppCompatActivity() {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    category = EASTER_SONGS
-                    binding.homeAppbar.setHeader(resources.getString(R.string.easter_songs))
-                    binding.homeAppbar.isPopupOpen = false
+                    setHeader(
+                        category = EASTER_SONGS,
+                        headerText = resources.getString(R.string.easter_songs)
+                    )
                     visibility = View.GONE
-                    binding.homeAppbar.setHeaderMarker()
                     updateSongs()
                 }
 
@@ -154,15 +173,16 @@ class HomeActivity : AppCompatActivity() {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    category = CHILD_SONGS
-                    binding.homeAppbar.setHeader(resources.getString(R.string.children_songs))
-                    binding.homeAppbar.isPopupOpen = false
+                    setHeader(
+                        category = CHILD_SONGS,
+                        headerText = resources.getString(R.string.children_songs)
+                    )
                     visibility = View.GONE
-                    binding.homeAppbar.setHeaderMarker()
                     updateSongs()
                 }
         }
 
+        // устанавливает клик на шапку
         binding.homeAppbar.apply {
             setMenuClicks()
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -198,30 +218,37 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    // получает список песен
-    private fun getAllSongs(token: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-            songs = mainInteractor.getAllSongs(token = token)
-
-            withContext(Dispatchers.Main) {
-                adapter.addFirstSongs(songs)
-                binding.homePreloader.visibility = View.GONE
-                binding.rvMainSongList.visibility = View.VISIBLE
-                binding.tvEmptyListStub.visibility = View.GONE
-            }
-
-            while (mainInteractor.page?.isNotBlank() == true || mainInteractor.page != null) {
-                val nextSongs = mainInteractor.getNextSongs(token = token)
-                songs.addAll(nextSongs)
-                withContext(Dispatchers.Main) {
-                    adapter.addFirstSongs(nextSongs)
-                }
-            }
+    // получить песни
+    private fun getFirstSongs() {
+        if (mKey?.getString(TOKEN, "") != "") {
+            model.getFirstSongs(mKey?.getString(TOKEN, "") ?: "", applicationContext)
+        } else {
+            model.getFirstSongs(intent.getStringExtra(TOKEN) ?: "", applicationContext)
         }
+    }
+
+    // установить текст в шапке
+    private fun setHeader(category: String, headerText: String) {
+        this.category = category
+        this.headerText = headerText
+        binding.homeAppbar.setHeader(this.headerText)
+        binding.homeAppbar.isPopupOpen = false
+        binding.homeAppbar.setHeaderMarker()
+    }
+
+    // выставляет параметры завершения загрузки
+    private fun endLoading() {
+        binding.homePreloader.visibility = View.GONE
+        binding.rvMainSongList.visibility = View.VISIBLE
+        binding.tvEmptyListStub.visibility = View.GONE
     }
 
     // обновляет и сортирует песни
     private fun updateSongs() {
-        adapter.sortedSongs(category, songs)
+        model.songsList.value?.let { adapter.sortedSongs(category, it) }
+    }
+
+    override fun onChanged(t: ArrayList<Result>?) {
+
     }
 }
