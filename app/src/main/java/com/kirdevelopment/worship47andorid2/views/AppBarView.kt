@@ -48,12 +48,11 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     // установить иконку поиска
     fun setSearchIcon() {
-        val searchButton = findViewById<ImageView>(R.id.info)
 
         if (isSearchMode) {
-            findViewById<ImageView>(R.id.info).setImageResource(R.drawable.ic_search_off)
+            findViewById<ImageView>(R.id.iv_info).setImageResource(R.drawable.ic_search_off)
         } else {
-            findViewById<ImageView>(R.id.info).setImageResource(R.drawable.ic_search)
+            findViewById<ImageView>(R.id.iv_info).setImageResource(R.drawable.ic_search)
         }
     }
 
@@ -80,7 +79,7 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         if (isHome) {
             marker.visibility = View.VISIBLE
             leftButton.setBackgroundResource(R.drawable.ic_menu)
-            rightButton.setImageResource(R.drawable.ic_search)
+            setSearchIcon()
             title.text = titleText
             subtitle.visibility = View.GONE
             setHeaderMarker()

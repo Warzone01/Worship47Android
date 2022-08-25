@@ -231,11 +231,13 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                         updateSongs()
                         hideKeyboard()
                         isSearchMode = false
+                        setSearchIcon()
                     } else {
                         this@HomeActivity.binding.searchLayout.visibility = View.VISIBLE
                         this@HomeActivity.binding.etSearch.requestFocus()
                         showKeyboard()
                         isSearchMode = true
+                        setSearchIcon()
                     }
                 }
         }
