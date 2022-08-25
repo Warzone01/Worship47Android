@@ -6,13 +6,11 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kirdevelopment.worship47andorid2.R
-import com.kirdevelopment.worship47andorid2.auth.AuthActivity
 import com.kirdevelopment.worship47andorid2.databinding.ActivityHomeBinding
 import com.kirdevelopment.worship47andorid2.detailSong.DetailActivity
 import com.kirdevelopment.worship47andorid2.home.adapters.MainSongListAdapter
@@ -236,6 +234,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     } else {
                         this@HomeActivity.binding.searchLayout.visibility = View.VISIBLE
                         this@HomeActivity.binding.etSearch.requestFocus()
+                        showKeyboard()
                         isSearchMode = true
                     }
                 }
