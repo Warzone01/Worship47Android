@@ -213,6 +213,9 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                         isPopupOpen = true
                         this@HomeActivity.binding.topPopup.visibility = View.VISIBLE
                         setHeaderMarker()
+
+                        // закрывает поиск
+                        setSearchState(false)
                     } else {
                         isPopupOpen = false
                         this@HomeActivity.binding.topPopup.visibility = View.GONE
@@ -225,20 +228,14 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    if (isSearchMode) {
-                        this@HomeActivity.binding.searchLayout.visibility = View.GONE
-                        this@HomeActivity.binding.etSearch.text = "" as? Editable
-                        updateSongs()
-                        hideKeyboard()
-                        isSearchMode = false
-                        setSearchIcon()
-                    } else {
-                        this@HomeActivity.binding.searchLayout.visibility = View.VISIBLE
-                        this@HomeActivity.binding.etSearch.requestFocus()
-                        showKeyboard()
-                        isSearchMode = true
-                        setSearchIcon()
+                    if (this@HomeActivity.binding.homeAppbar.isPopupOpen) {
+                        this@HomeActivity.binding.topPopup.apply {
+                            this@HomeActivity.binding.homeAppbar.isPopupOpen = false
+                            visibility = View.GONE
+                            this@HomeActivity.binding.homeAppbar.setHeaderMarker()
+                        }
                     }
+                    setSearchState(!isSearchMode)
                 }
         }
 //  этот код, чтобы можно было выйти, просто сохранён до лучших времён
@@ -287,6 +284,24 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
     // поиск по песням
     private fun searchSong(text: String) {
         model.songsList.value?.let { adapter.searchSong(text, it) }
+    }
+
+    // закрыть или открыть поиск
+    private fun setSearchState(isNeedActive: Boolean) {
+        if (isNeedActive) {
+            binding.searchLayout.visibility = View.VISIBLE
+            binding.etSearch.requestFocus()
+            binding.homeAppbar.showKeyboard()
+            binding.homeAppbar.isSearchMode = true
+            binding.homeAppbar.setSearchIcon()
+        } else {
+            binding.searchLayout.visibility = View.GONE
+            binding.etSearch.text = "" as? Editable
+            updateSongs()
+            binding.homeAppbar.hideKeyboard()
+            binding.homeAppbar.isSearchMode = false
+            binding.homeAppbar.setSearchIcon()
+        }
     }
 
     override fun onChanged(t: ArrayList<Result>?) {
