@@ -7,7 +7,9 @@ import com.kirdevelopment.worship47andorid2.database.SongDatabase
 import com.kirdevelopment.worship47andorid2.database.SongsEntity
 import com.kirdevelopment.worship47andorid2.database.StringConverter
 import com.kirdevelopment.worship47andorid2.interactors.MainInteractor
+import com.kirdevelopment.worship47andorid2.models.Category
 import com.kirdevelopment.worship47andorid2.models.Result
+import com.kirdevelopment.worship47andorid2.models.Translator
 import kotlinx.coroutines.*
 
 class HomeViewModel : ViewModel() {
@@ -70,7 +72,7 @@ class HomeViewModel : ViewModel() {
             songTextRu = song.text,
             songNameEng = song.title_eng ?: "",
             songNameRu = song.title,
-            songCategorySlug = StringConverter.fromListToString(song.category.map { it.slug }
+            songCategorySlug = StringConverter.fromListToString(song.category.map { it.title }
                 ?: emptyList()),
             author = song.author ?: "",
             songKeys = StringConverter.fromListToString(
@@ -103,9 +105,20 @@ class HomeViewModel : ViewModel() {
 
     // конвертирует базу данныйх в лайвдату
     private fun parseDBSongsToStore(songsEntity: SongsEntity): Result {
+
+        val categoryList: MutableList<Category> = mutableListOf()
+        for (i in StringConverter.fromStringToList(songsEntity.songCategorySlug)) {
+            categoryList.add(Category(title = i))
+        }
+
+        val translator: MutableList<Translator> = mutableListOf()
+        for (i in StringConverter.fromStringToList(songsEntity.songTranslators)) {
+            translator.add(Translator(name = i))
+        }
+
         return Result(
             author = songsEntity.author,
-            category = emptyList(),
+            category = categoryList as List<Category>,
             chordKey1 = StringConverter.fromStringToList(songsEntity.songKeys)[0],
             chordKey2 = StringConverter.fromStringToList(songsEntity.songKeys)[1],
             chords = songsEntity.songChords,
