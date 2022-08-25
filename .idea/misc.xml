@@ -11,8 +11,10 @@
         <entry key="app/src/main/res/drawable/error_under_line.xml" value="0.2764102564102564" />
         <entry key="app/src/main/res/drawable/focused_under_line.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/drawable/ic_arrow_up.xml" value="0.19635416666666666" />
+        <entry key="app/src/main/res/drawable/ic_search_off.xml" value="0.3268641470888662" />
         <entry key="app/src/main/res/drawable/not_selected_indicator.xml" value="0.33240740740740743" />
         <entry key="app/src/main/res/drawable/popup_padding_background.xml" value="0.2526041666666667" />
+        <entry key="app/src/main/res/drawable/search_background.xml" value="0.3268641470888662" />
         <entry key="app/src/main/res/drawable/selected_indicator.xml" value="0.33240740740740743" />
         <entry key="app/src/main/res/drawable/selected_indicator_circle.xml" value="0.30562595032944756" />
         <entry key="app/src/main/res/drawable/song_item.xml" value="0.2777777777777778" />

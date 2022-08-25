@@ -42,6 +42,18 @@ class MainSongListAdapter(
         notifyDataSetChanged()
     }
 
+    // поиск песен
+    fun searchSong(text: String, songsForSort: ArrayList<Result>) {
+        songs.clear()
+        songs.addAll(songsForSort.filter {
+            it.title.lowercase().contains(text.lowercase())
+                    || it.title_eng?.lowercase()?.contains(text.lowercase()) ?: false
+                    || it.text.lowercase().contains(text.lowercase())
+                    || it.text_eng?.lowercase()?.contains(text.lowercase()) ?: false
+        })
+        notifyDataSetChanged()
+    }
+
     // добавление первых песен в список
     fun addFirstSongs(songsList: ArrayList<Result>) {
         songs.addAll(songsList)
