@@ -10,6 +10,8 @@ import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.databinding.ActivityHomeBinding
 import com.kirdevelopment.worship47andorid2.detailSong.DetailActivity
@@ -33,7 +35,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClickListener, KeyboardUtils {
+class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
 
     private lateinit var binding: ActivityHomeBinding
     private var model = HomeViewModel()
@@ -44,14 +46,20 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
     private lateinit var adapter: MainSongListAdapter
     private var songClickedPosition: Int = -1
 
+    private lateinit var linearLayoutManager: LinearLayoutManager
+
+    private val firstVisibleItemPosition: Int
+        get() = linearLayoutManager.findFirstVisibleItemPosition()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        linearLayoutManager = LinearLayoutManager(this)
         adapter = MainSongListAdapter(songs, this)
         mKey = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        binding.rvMainSongList.layoutManager = LinearLayoutManager(this)
+        binding.rvMainSongList.layoutManager = linearLayoutManager
         binding.rvMainSongList.adapter = adapter
     }
 
@@ -66,6 +74,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
 
         setClicks()
         setSearch()
+        setScrollListener()
 
         // следит за списком песен
         model.songsList.observe(this, {
@@ -109,7 +118,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
     private fun setSearch() {
 
         // если текст поиска не пустой то при перезапуске активности не сбрасываем поиск
-        if (binding.etSearch.text.toString()!="") {
+        if (binding.etSearch.text.toString() != "") {
             searchSong(binding.etSearch.text.toString())
         }
 
@@ -148,6 +157,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     )
                     visibility = View.GONE
                     updateSongs()
+                    binding.rvMainSongList.scrollToPosition(0)
                 }
 
             // слушает клик в попапе по основным песням
@@ -161,6 +171,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     )
                     visibility = View.GONE
                     updateSongs()
+                    binding.rvMainSongList.scrollToPosition(0)
                 }
 
             // слушает клик в попапе по рождественским песням
@@ -174,6 +185,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     )
                     visibility = View.GONE
                     updateSongs()
+                    binding.rvMainSongList.scrollToPosition(0)
                 }
 
             // слушает клик в попапе по пасхальным песням
@@ -187,6 +199,7 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     )
                     visibility = View.GONE
                     updateSongs()
+                    binding.rvMainSongList.scrollToPosition(0)
                 }
 
             // слушает клик в попапе по детским песням
@@ -200,7 +213,14 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
                     )
                     visibility = View.GONE
                     updateSongs()
+                    binding.rvMainSongList.scrollToPosition(0)
                 }
+        }
+
+        // устанавливает клик на кнопку наверх
+        binding.btnUp.setOnClickListener {
+            binding.rvMainSongList.scrollToPosition(0)
+            binding.btnUp.visibility = View.GONE
         }
 
         // устанавливает клик на шапку
@@ -249,6 +269,21 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
 //            Intent(this@HomeActivity, AuthActivity::class.java)
 //        )
 //        finish()
+    }
+
+    // слушатель изменения положения скролла
+    private fun setScrollListener() {
+        binding.rvMainSongList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val totalItemCount = recyclerView.layoutManager?.itemCount
+                if (firstVisibleItemPosition != 0) {
+                    binding.btnUp.visibility = View.VISIBLE
+                } else {
+                    binding.btnUp.visibility = View.GONE
+                }
+            }
+        })
     }
 
     // получить песни
@@ -302,9 +337,5 @@ class HomeActivity : AppCompatActivity(), Observer<ArrayList<Result>>, SongClick
             binding.homeAppbar.isSearchMode = false
             binding.homeAppbar.setSearchIcon()
         }
-    }
-
-    override fun onChanged(t: ArrayList<Result>?) {
-
     }
 }
