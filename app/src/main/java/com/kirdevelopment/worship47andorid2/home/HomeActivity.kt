@@ -8,10 +8,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.databinding.ActivityHomeBinding
 import com.kirdevelopment.worship47andorid2.detailSong.DetailActivity
@@ -70,13 +68,14 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         if (songs.isEmpty()) {
             getFirstSongs()
             binding.homePreloader
+        } else {
+            updateAllSongs()
         }
 
         setClicks()
-        setSearch()
         setScrollListener()
 
-        // следит за списком песен
+        // следит за списком песен и обновляет их
         model.songsList.observe(this, {
             it.let { result ->
                 endLoading()
@@ -89,6 +88,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
             isHome = true,
             titleText = headerText
         )
+        setSearch()
     }
 
     override fun onBackPressed() {
@@ -276,7 +276,6 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         binding.rvMainSongList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val totalItemCount = recyclerView.layoutManager?.itemCount
                 if (firstVisibleItemPosition != 0) {
                     binding.btnUp.visibility = View.VISIBLE
                 } else {
@@ -292,6 +291,15 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
             model.getFirstSongs(mKey?.getString(TOKEN, "") ?: "", applicationContext)
         } else {
             model.getFirstSongs(intent.getStringExtra(TOKEN) ?: "", applicationContext)
+        }
+    }
+
+    // обновить песни
+    private fun updateAllSongs() {
+        if (mKey?.getString(TOKEN, "") != "") {
+            model.updateSongs(mKey?.getString(TOKEN, "") ?: "", applicationContext)
+        } else {
+            model.updateSongs(intent.getStringExtra(TOKEN) ?: "", applicationContext)
         }
     }
 

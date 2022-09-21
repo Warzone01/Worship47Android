@@ -1,6 +1,7 @@
 package com.kirdevelopment.worship47andorid2.home
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kirdevelopment.worship47andorid2.database.SongDatabase
@@ -26,6 +27,9 @@ class HomeViewModel : ViewModel() {
             val songsDb = database.songsDao().getAllSongs()
             if (songsDb.isEmpty()) {
                 songs.addAll(mainInteractor.getAllSongs(token))
+                for (i in songs) {
+                    database.songsDao().insertSongs(parseSongsToDb(i))
+                }
                 getNextSongs(token, context)
             } else {
                 withContext(Dispatchers.Main) {
@@ -35,6 +39,23 @@ class HomeViewModel : ViewModel() {
                     songsList.value = songs
                     songsList.notifyObserver()
                 }
+            }
+        }
+    }
+
+    // обновляет песни
+    fun updateSongs(token: String, context: Context) {
+        val database: SongDatabase = SongDatabase.getDatabase(context)
+        Log.d("Вызвалось", "Обновление песен")
+        MainScope().launch(Dispatchers.IO) {
+            while (!mainInteractor.page.isNullOrBlank() && mainInteractor.page != lastPage) {
+                nextSongs.addAll(mainInteractor.getNextSongs(token))
+
+                // добавляет в базу данных песни
+                for (i in nextSongs) {
+                    database.songsDao().updateSongs(parseSongsToDb(i))
+                }
+                nextSongs.clear()
             }
         }
     }
