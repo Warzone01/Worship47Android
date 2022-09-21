@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/padding"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".detailSong.fragments.SongInfoFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginVertical="100dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:elevation="5dp"
+        android:focusable="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_category_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!--категории-->
+                <TextView
+                    android:id="@+id/tv_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/category"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <!--разделитель-->
+                <View
+                    android:layout_width="102dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_author_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!--автор-->
+                <TextView
+                    android:id="@+id/tv_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/author"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <!--разделитель-->
+                <View
+                    android:layout_width="102dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_translator_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!--переводчик-->
+                <TextView
+                    android:id="@+id/tv_translator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/translator"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <!--разделитель-->
+                <View
+                    android:layout_width="102dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_chords_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!--тональность-->
+                <TextView
+                    android:id="@+id/tv_keys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/chords"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/ubuntu_bold"/>
+
+                <com.kirdevelopment.worship47andorid2.views.ChordsDownloadButtonsView
+                    android:id="@+id/chord_download_buttons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <!--разделитель-->
+                <View
+                    android:layout_width="102dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_presentation_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_presentation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_background"
+                    android:textColor="@color/black"
+                    android:text="@string/download_presentation"
+                    android:fontFamily="@font/ubuntu_bold"
+                    />
+
+                <!--разделитель-->
+                <View
+                    android:layout_width="102dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_videos_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.kirdevelopment.worship47andorid2.views.VideoPreviewView
+                    android:id="@+id/videos_list"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="108dp"
+        android:elevation="10dp"
+        android:layout_marginEnd="35dp"
+        android:layout_gravity="end"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_close"
+        />
+</FrameLayout>

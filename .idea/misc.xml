@@ -3,14 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/compose-model-1663663430740.xml" value="0.43223905723905726" />
+        <entry key="../../../../layout/compose-model-1663663498196.xml" value="0.43223905723905726" />
+        <entry key="../../../../layout/compose-model-1663700292968.xml" value="1.6" />
+        <entry key="../../../../layout/compose-model-1663764154628.xml" value="0.1" />
         <entry key="../../../../layout/custom_preview.xml" value="0.47239583333333335" />
         <entry key="../../../layout/custom_preview.xml" value="0.33" />
+        <entry key="app/src/main/res/drawable-v24/bg_background.xml" value="0.3268641470888662" />
+        <entry key="app/src/main/res/drawable-v24/btn_next.xml" value="0.3268641470888662" />
         <entry key="app/src/main/res/drawable-v24/under_line.xml" value="0.337037037037037" />
         <entry key="app/src/main/res/drawable/bg_btn_next.xml" value="0.21354166666666666" />
         <entry key="app/src/main/res/drawable/bg_song_item.xml" value="0.4389254941713127" />
         <entry key="app/src/main/res/drawable/error_under_line.xml" value="0.2764102564102564" />
         <entry key="app/src/main/res/drawable/focused_under_line.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/drawable/ic_arrow_up.xml" value="0.19635416666666666" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.5208333333333334" />
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.3268641470888662" />
+        <entry key="app/src/main/res/drawable/ic_play.xml" value="0.5208333333333334" />
         <entry key="app/src/main/res/drawable/ic_search_off.xml" value="0.3268641470888662" />
         <entry key="app/src/main/res/drawable/not_selected_indicator.xml" value="0.33240740740740743" />
         <entry key="app/src/main/res/drawable/popup_padding_background.xml" value="0.2526041666666667" />
@@ -21,21 +30,25 @@
         <entry key="app/src/main/res/drawable/song_item_bg_grey.xml" value="0.2777777777777778" />
         <entry key="app/src/main/res/drawable/top_popup_background.xml" value="0.30562595032944756" />
         <entry key="app/src/main/res/drawable/up_background.xml" value="0.3268641470888662" />
+        <entry key="app/src/main/res/drawable/video_background.xml" value="0.5208333333333334" />
         <entry key="app/src/main/res/font/ubuntu.xml" value="0.337037037037037" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.35520833333333335" />
-        <entry key="app/src/main/res/layout/activity_detail.xml" value="0.42857142857142855" />
+        <entry key="app/src/main/res/layout/activity_detail.xml" value="0.264" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.43015214384508993" />
+        <entry key="app/src/main/res/layout/button_download_layout.xml" value="0.5005208333333333" />
         <entry key="app/src/main/res/layout/fragment_chord.xml" value="0.421875" />
         <entry key="app/src/main/res/layout/fragment_eng_tab.xml" value="0.3953125" />
         <entry key="app/src/main/res/layout/fragment_first.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/fragment_ru_tab.xml" value="0.421875" />
         <entry key="app/src/main/res/layout/fragment_second.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/fragment_song_info.xml" value="0.31302083333333336" />
         <entry key="app/src/main/res/layout/fragment_third.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/main_bar.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/song_item.xml" value="0.5756521739130435" />
         <entry key="app/src/main/res/layout/tab_element.xml" value="0.421875" />
         <entry key="app/src/main/res/layout/top_popup_menu.xml" value="0.3828571428571429" />
+        <entry key="app/src/main/res/layout/video_layout.xml" value="0.5005208333333333" />
       </map>
     </option>
   </component>

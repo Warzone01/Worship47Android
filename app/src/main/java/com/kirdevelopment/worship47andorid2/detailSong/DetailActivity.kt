@@ -2,11 +2,17 @@ package com.kirdevelopment.worship47andorid2.detailSong
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.database.SongsEntity
+import com.kirdevelopment.worship47andorid2.database.StringConverter
 import com.kirdevelopment.worship47andorid2.databinding.ActivityDetailBinding
+import com.kirdevelopment.worship47andorid2.detailSong.fragments.SongInfoFragment
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.uber.autodispose.android.lifecycle.scope
@@ -18,6 +24,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private val model = DetailViewModel()
     var song: SongsEntity? = null
+    private val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+    private var fragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +40,27 @@ class DetailActivity : AppCompatActivity() {
     override fun onResume() {
         model.getSong(this)
         super.onResume()
+
+        if(fragment == null) {
+            fragment = SongInfoFragment.newInstance(
+                category = StringConverter.fromStringToList(song?.songCategorySlug ?: "")
+                    .toMutableList() as ArrayList<String>,
+                author = song?.author,
+                presentation = song?.presentation,
+                chords = StringConverter.fromStringToList(song?.chordsFilesLinks ?: "")
+                    .toMutableList() as ArrayList<String>,
+                videos = StringConverter.fromStringToList(song?.songVideoIds ?: "")
+                    .toMutableList() as ArrayList<String>,
+                translator = StringConverter.fromStringToList(song?.songTranslators ?: "")
+                    .toMutableList() as ArrayList<String>,
+                keys = StringConverter.fromStringToList(song?.songKeys ?: "")
+                    .toMutableList() as ArrayList<String>
+            )
+            transaction
+                .replace(R.id.song_info_fragment, fragment as SongInfoFragment)
+                .commit()
+        }
+
         binding.homeAppbar.changeMainBar(
             isHome = false,
             titleText = song?.songNameRu ?: "",
@@ -42,8 +71,22 @@ class DetailActivity : AppCompatActivity() {
             .autoDispose(scope()).subscribe {
                 finish()
             }
+        binding.homeAppbar.setLoginClicks()
+            .throttleFirst(300, TimeUnit.MILLISECONDS)
+            .autoDispose(scope()).subscribe {
+                binding.songInfoFragment.visibility = View.VISIBLE
+            }
 
         initTabs()
+    }
+
+    override fun onBackPressed() {
+        if (binding.songInfoFragment.isVisible) {
+            binding.songInfoFragment.visibility = View.GONE
+            return
+        }
+
+        super.onBackPressed()
     }
 
     // создаёт вкладки
@@ -51,8 +94,9 @@ class DetailActivity : AppCompatActivity() {
         binding.vpSongText.adapter = DetailSongTabsAdapter(
             fm = supportFragmentManager,
             lifecycle = lifecycle,
-            song = song ?: SongsEntity())
-        binding.vpSongText.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            song = song ?: SongsEntity()
+        )
+        binding.vpSongText.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
