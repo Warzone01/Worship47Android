@@ -3,19 +3,16 @@ package com.kirdevelopment.worship47andorid2.auth
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.view.isVisible
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.databinding.ActivityAuthBinding
 import com.kirdevelopment.worship47andorid2.home.HomeActivity
 import com.kirdevelopment.worship47andorid2.interactors.AuthInteractor
-import com.kirdevelopment.worship47andorid2.models.AuthKey
 import com.kirdevelopment.worship47andorid2.utils.Constants.APP_PREFERENCES
 import com.kirdevelopment.worship47andorid2.utils.Constants.TOKEN
 import kotlinx.coroutines.*
@@ -26,6 +23,7 @@ class AuthActivity : AppCompatActivity() {
     private val authInteractor = AuthInteractor()
     private val model = AuthViewModel()
     private var mKey: SharedPreferences? = null
+    private val registrationLink = "https://worship47.tk/accounts/signup/"
 
     var dp1 = 0f
     var screenKey = 0
@@ -69,13 +67,14 @@ class AuthActivity : AppCompatActivity() {
         }
 
         binding.btnRegistration.setOnClickListener {
-            if (!binding.cpPreloaderAuth.isVisible) {
-                when (screenKey) {
-                    0 -> initRegistration()
-
-                    else -> initAuth()
-                }
-            }
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(registrationLink)))
+//            if (!binding.cpPreloaderAuth.isVisible) {
+//                when (screenKey) {
+//                    0 -> initRegistration()
+//
+//                    else -> initAuth()
+//                }
+//            }
         }
     }
 
@@ -130,7 +129,7 @@ class AuthActivity : AppCompatActivity() {
         binding.llInputName.visibility = View.VISIBLE
         binding.llInputRepeatPassword.visibility = View.VISIBLE
         binding.btnLogin.text = getText(R.string.registration)
-        binding.tvForgotPassword.visibility = View.GONE
+//        binding.tvForgotPassword.visibility = View.GONE
         screenKey = 1
     }
 
@@ -149,7 +148,7 @@ class AuthActivity : AppCompatActivity() {
         binding.llInputFirstname.visibility = View.GONE
         binding.llInputName.visibility = View.GONE
         binding.llInputRepeatPassword.visibility = View.GONE
-        binding.tvForgotPassword.visibility = View.VISIBLE
+//        binding.tvForgotPassword.visibility = View.VISIBLE
         screenKey = 0
     }
 

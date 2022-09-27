@@ -54,6 +54,8 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (songs.isNotEmpty()) updateSongs()
+
         linearLayoutManager = LinearLayoutManager(this)
         adapter = MainSongListAdapter(songs, this)
         mKey = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
@@ -68,8 +70,6 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         if (songs.isEmpty()) {
             getFirstSongs()
             binding.homePreloader
-        } else {
-            updateAllSongs()
         }
 
         setClicks()
@@ -315,6 +315,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
     // выставляет параметры завершения загрузки
     private fun endLoading() {
         binding.homePreloader.visibility = View.GONE
+        binding.tvWaitForDownloading.visibility = View.GONE
         binding.rvMainSongList.visibility = View.VISIBLE
         binding.tvEmptyListStub.visibility = View.GONE
     }

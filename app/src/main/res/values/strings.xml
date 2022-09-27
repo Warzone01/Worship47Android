@@ -37,4 +37,5 @@
     <string name="download_chords">Скачать аккорды %s</string>
     <string name="download_presentation">Скачать презентацию</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="wait_until_downloading_end">Дождитесь окончания загрузки песен</string>
 </resources>

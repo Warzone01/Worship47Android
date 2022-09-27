@@ -41,20 +41,8 @@ class MainActivity : AppCompatActivity() {
 
     // определяем вкладки
     private fun initTabs() {
-
-        val selectedParam: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-            0,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            2f
-        )
-
-        val notSelectedParam: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-            0,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            1f
-        )
-
         binding.vpHome.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+        binding.dotsIndicator.attachTo(binding.vpHome)
         binding.vpHome.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -66,13 +54,6 @@ class MainActivity : AppCompatActivity() {
                         binding.ivBtnNext.setOnClickListener {
                             binding.vpHome.currentItem = position + 1
                         }
-                        binding.firstIndicator.setBackgroundResource(R.drawable.selected_indicator)
-                        binding.firstIndicator.layoutParams = selectedParam
-                        selectedParam.setMargins(8,0,8,0)
-                        binding.secondIndicator.setBackgroundResource(R.drawable.not_selected_indicator)
-                        binding.secondIndicator.layoutParams = notSelectedParam
-                        binding.thirdIndicator.setBackgroundResource(R.drawable.not_selected_indicator)
-                        binding.thirdIndicator.layoutParams = notSelectedParam
                     }
 
                     1 -> {
@@ -80,13 +61,6 @@ class MainActivity : AppCompatActivity() {
                         binding.ivBtnNext.setOnClickListener {
                             binding.vpHome.currentItem = position + 1
                         }
-                        binding.firstIndicator.setBackgroundResource(R.drawable.not_selected_indicator)
-                        binding.firstIndicator.layoutParams = notSelectedParam
-                        binding.secondIndicator.setBackgroundResource(R.drawable.selected_indicator)
-                        binding.secondIndicator.layoutParams = selectedParam
-                        selectedParam.setMargins(8,0,8,0)
-                        binding.thirdIndicator.setBackgroundResource(R.drawable.not_selected_indicator)
-                        binding.thirdIndicator.layoutParams = notSelectedParam
                     }
 
                     else -> {
@@ -96,13 +70,6 @@ class MainActivity : AppCompatActivity() {
                                 AuthActivity::class.java))
                             finish()
                         }
-                        binding.firstIndicator.setBackgroundResource(R.drawable.not_selected_indicator)
-                        binding.firstIndicator.layoutParams = notSelectedParam
-                        binding.secondIndicator.setBackgroundResource(R.drawable.not_selected_indicator)
-                        binding.secondIndicator.layoutParams = notSelectedParam
-                        binding.thirdIndicator.setBackgroundResource(R.drawable.selected_indicator)
-                        binding.thirdIndicator.layoutParams = selectedParam
-                        selectedParam.setMargins(8,0,8,0)
                     }
                 }
             }
