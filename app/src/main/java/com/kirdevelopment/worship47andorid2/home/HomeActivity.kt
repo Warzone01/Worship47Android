@@ -54,7 +54,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (songs.isNotEmpty()) updateSongs()
+        if (songs.isNotEmpty()) updateAllSongs()
 
         linearLayoutManager = LinearLayoutManager(this)
         adapter = MainSongListAdapter(songs, this)
