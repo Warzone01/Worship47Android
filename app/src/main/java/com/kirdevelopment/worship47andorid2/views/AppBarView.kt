@@ -78,6 +78,7 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
         if (isHome) {
             marker.visibility = View.VISIBLE
+            leftButton.visibility = View.GONE
             leftButton.setBackgroundResource(R.drawable.ic_menu)
             setSearchIcon()
             title.text = titleText
@@ -85,6 +86,7 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             setHeaderMarker()
         } else {
             marker.visibility = View.GONE
+            leftButton.visibility = View.VISIBLE
             subtitle.visibility = View.VISIBLE
             rightButton.visibility = View.VISIBLE
             leftButton.setImageResource(R.drawable.ic_back)

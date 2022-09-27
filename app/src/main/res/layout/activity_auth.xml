@@ -42,7 +42,7 @@
                 android:id="@+id/ll_header_auth_activity"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/smoke"
+                android:background="@color/black_alpha"
                 android:animateLayoutChanges="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -291,7 +291,7 @@
                 android:textSize="15sp"
                 android:textColor="@color/main_orange"
                 android:layout_gravity="center_vertical|end"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
         </FrameLayout>
 
