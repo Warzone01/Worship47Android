@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import android.view.animation.LinearInterpolator
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import com.kirdevelopment.worship47andorid2.detailSong.DetailActivity
 import com.kirdevelopment.worship47andorid2.home.adapters.MainSongListAdapter
 import com.kirdevelopment.worship47andorid2.home.adapters.SongClickListener
 import com.kirdevelopment.worship47andorid2.models.Result
+import com.kirdevelopment.worship47andorid2.models.SongParams
 import com.kirdevelopment.worship47andorid2.utils.Constants.ALL_SONGS
 import com.kirdevelopment.worship47andorid2.utils.Constants.APP_PREFERENCES
 import com.kirdevelopment.worship47andorid2.utils.Constants.CHILD_SONGS
@@ -26,6 +30,9 @@ import com.kirdevelopment.worship47andorid2.utils.Constants.SONG
 import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.kirdevelopment.worship47andorid2.utils.Constants.TOKEN
 import com.kirdevelopment.worship47andorid2.utils.KeyboardUtils
+import com.kirdevelopment.worship47andorid2.filterCore.SortSongs
+import com.kirdevelopment.worship47andorid2.views.TopPopupView
+import com.skydoves.balloon.*
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,6 +50,8 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
     private var songs = ArrayList<Result>()
     private lateinit var adapter: MainSongListAdapter
     private var songClickedPosition: Int = -1
+    private var animationDuration = 200L
+    var songParams: SongParams = SongParams()
 
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -79,7 +88,12 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         model.songsList.observe(this, {
             it.let { result ->
                 endLoading()
-                adapter.sortedSongs(category, result)
+                if (SortSongs.checkIsFilterNotEmpty()) {
+                    sortSongs()
+                } else {
+                    adapter.sortedSongs(category, result)
+                }
+
             }
         })
 
@@ -97,7 +111,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         if (binding.homeAppbar.isPopupOpen) {
             binding.topPopup.apply {
                 binding.homeAppbar.isPopupOpen = false
-                visibility = View.GONE
+                animatePopup(this@HomeActivity.binding.topPopup, true)
                 binding.homeAppbar.setHeaderMarker()
             }
             return
@@ -127,7 +141,9 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
             if (count >= 1) {
                 searchSong(text.toString())
             } else {
-                updateSongs()
+                if (songParams == SongParams()) {
+                    updateSongs()
+                }
             }
         }
     }
@@ -141,8 +157,8 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    visibility = View.GONE
                     binding.homeAppbar.isPopupOpen = false
+                    animatePopup(this@HomeActivity.binding.topPopup, true)
                     binding.homeAppbar.setHeaderMarker()
                 }
 
@@ -158,6 +174,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     visibility = View.GONE
                     updateSongs()
                     binding.rvMainSongList.scrollToPosition(0)
+                    sortSongs()
                 }
 
             // слушает клик в попапе по основным песням
@@ -172,6 +189,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     visibility = View.GONE
                     updateSongs()
                     binding.rvMainSongList.scrollToPosition(0)
+                    sortSongs()
                 }
 
             // слушает клик в попапе по рождественским песням
@@ -186,6 +204,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     visibility = View.GONE
                     updateSongs()
                     binding.rvMainSongList.scrollToPosition(0)
+                    sortSongs()
                 }
 
             // слушает клик в попапе по пасхальным песням
@@ -200,6 +219,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     visibility = View.GONE
                     updateSongs()
                     binding.rvMainSongList.scrollToPosition(0)
+                    sortSongs()
                 }
 
             // слушает клик в попапе по детским песням
@@ -214,6 +234,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     visibility = View.GONE
                     updateSongs()
                     binding.rvMainSongList.scrollToPosition(0)
+                    sortSongs()
                 }
         }
 
@@ -231,15 +252,57 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                 .autoDispose(scope()).subscribe {
                     if (!isPopupOpen) {
                         isPopupOpen = true
-                        this@HomeActivity.binding.topPopup.visibility = View.VISIBLE
+                        animatePopup(this@HomeActivity.binding.topPopup, !isPopupOpen)
                         setHeaderMarker()
 
-                        // закрывает поиск
-                        setSearchState(false)
                     } else {
                         isPopupOpen = false
-                        this@HomeActivity.binding.topPopup.visibility = View.GONE
+                        animatePopup(this@HomeActivity.binding.topPopup, !isPopupOpen)
                         setHeaderMarker()
+                    }
+                }
+
+            // показать окно сортировки
+            setSortClick()
+                .throttleFirst(300L, TimeUnit.MILLISECONDS)
+                .autoDispose(scope()).subscribe {
+
+                    // закрывает поиск и попап
+                    isPopupOpen = false
+                    animatePopup(this@HomeActivity.binding.topPopup, !isPopupOpen)
+                    setHeaderMarker()
+
+                    if (setFilterBalloon().isShowing) {
+                        setFilterBalloon().dismiss()
+                    } else {
+                        setFilterBalloon().apply {
+                            showAsDropDown(
+                                anchor = this@HomeActivity.binding.homeAppbar.findViewById(
+                                    R.id.iv_sort_songs
+                                )
+                            )
+                            SortSongs.setClicksSortChords(
+                                this,
+                                songParams,
+                                getDrawable(R.drawable.ic_arrow_up),
+                                getDrawable(R.drawable.ic_arrow_down)
+                            )
+                            SortSongs.setClicksSortCategories(
+                                this,
+                                songParams,
+                                getDrawable(R.drawable.ic_arrow_up),
+                                getDrawable(R.drawable.ic_arrow_down)
+                            )
+                            SortSongs.setClicksSortLevel(
+                                this,
+                                songParams,
+                                getDrawable(R.drawable.ic_arrow_up),
+                                getDrawable(R.drawable.ic_arrow_down)
+                            )
+                            SortSongs.setClickSortTranslate(this, songParams)
+                            SortSongs.setClearClick(this, songParams)
+                            SortSongs.setApplyClick(this)
+                        }
                     }
                 }
 
@@ -251,7 +314,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     if (this@HomeActivity.binding.homeAppbar.isPopupOpen) {
                         this@HomeActivity.binding.topPopup.apply {
                             this@HomeActivity.binding.homeAppbar.isPopupOpen = false
-                            visibility = View.GONE
+                            animatePopup(this@HomeActivity.binding.topPopup, !isPopupOpen)
                             this@HomeActivity.binding.homeAppbar.setHeaderMarker()
                         }
                     }
@@ -322,26 +385,127 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
 
     // обновляет и сортирует песни
     private fun updateSongs() {
-        model.songsList.value?.let { adapter.sortedSongs(category, it) }
+        if (binding.homeAppbar.isSearchMode) {
+            searchSong(binding.etSearch.text.toString())
+        } else {
+            model.songsList.value?.let {
+                adapter.sortSongsForParams(
+                    it,
+                    model.filterParms.value,
+                    category
+                )
+            }
+        }
     }
 
     // поиск по песням
     private fun searchSong(text: String) {
-        model.songsList.value?.let { adapter.searchSong(text, it) }
+        model.songsList.value?.let {
+            adapter.searchSong(
+                text = text,
+                songsForSort = it,
+                params = model.filterParms.value,
+                category = category
+            )
+        }
+    }
+
+    // сортировка по заданым параметрам
+    private fun sortSongs() {
+        model.filterParms.value = songParams
+        if (binding.homeAppbar.isSearchMode) {
+            searchSong(binding.etSearch.text.toString())
+        } else {
+            model.songsList.value?.let {
+                adapter.sortSongsForParams(
+                    it,
+                    model.filterParms.value,
+                    category
+                )
+            }
+        }
+        binding.rvMainSongList.scrollToPosition(0)
+        if (songs.isNullOrEmpty()) {
+            binding.tvWaitForDownloading.text = getString(R.string.empty_list)
+            binding.tvWaitForDownloading.visibility = View.VISIBLE
+        } else {
+            binding.tvWaitForDownloading.visibility = View.GONE
+        }
+    }
+
+    // показать сортировку
+    private fun setFilterBalloon(): Balloon {
+        return Balloon.Builder(this)
+            .setLayout(R.layout.sort_layout)
+            .setArrowSize(10)
+            .setArrowAlignAnchorPadding(0)
+            .setArrowOrientation(ArrowOrientation.TOP)
+            .setWidthRatio(0.8f)
+            .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            .setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+            .setCornerRadius(4f)
+            .setOnBalloonDismissListener {
+                sortSongs()
+            }
+            .setBalloonAnimation(BalloonAnimation.OVERSHOOT)
+            .build()
+    }
+
+    // анимирует появление и исчезновение попапа
+    private fun animatePopup(popup: TopPopupView, isHide: Boolean = false) {
+        popup.apply {
+            if (!isHide) {
+                visibility = View.VISIBLE
+                translationY = -1000f
+                animate()
+                    .translationY(1f)
+                    .setDuration(animationDuration)
+                    .interpolator = LinearInterpolator()
+            } else {
+                translationY = 1f
+                animate()
+                    .withEndAction { visibility = View.GONE }
+                    .translationY(-1000f)
+                    .setDuration(animationDuration)
+                    .interpolator = LinearInterpolator()
+            }
+        }
+    }
+
+    // анимирует появление и счезновение поиска
+    private fun animateSearch(search: LinearLayout, isHide: Boolean) {
+        search.apply {
+            if (!isHide) {
+                visibility = View.VISIBLE
+                translationY = -100f
+                animate()
+                    .translationY(1f)
+                    .setDuration(animationDuration)
+                    .interpolator = LinearInterpolator()
+            } else {
+                translationY = 1f
+                animate()
+                    .withEndAction { visibility = View.GONE }
+                    .translationY(-100f)
+                    .setDuration(animationDuration)
+                    .interpolator = LinearInterpolator()
+            }
+        }
     }
 
     // закрыть или открыть поиск
-    private fun setSearchState(isNeedActive: Boolean) {
+    private fun setSearchState(isNeedActive: Boolean, isNeedUpdateSongs: Boolean = true) {
         if (isNeedActive) {
-            binding.searchLayout.visibility = View.VISIBLE
+            animateSearch(binding.searchLayout, false)
             binding.etSearch.requestFocus()
             binding.homeAppbar.showKeyboard()
             binding.homeAppbar.isSearchMode = true
             binding.homeAppbar.setSearchIcon()
         } else {
-            binding.searchLayout.visibility = View.GONE
+            animateSearch(binding.searchLayout, true)
             binding.etSearch.text = "" as? Editable
-            updateSongs()
+            if (isNeedUpdateSongs) updateSongs()
+
             binding.homeAppbar.hideKeyboard()
             binding.homeAppbar.isSearchMode = false
             binding.homeAppbar.setSearchIcon()

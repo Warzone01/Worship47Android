@@ -9,6 +9,7 @@ import com.kirdevelopment.worship47andorid2.database.StringConverter
 import com.kirdevelopment.worship47andorid2.interactors.MainInteractor
 import com.kirdevelopment.worship47andorid2.models.Category
 import com.kirdevelopment.worship47andorid2.models.Result
+import com.kirdevelopment.worship47andorid2.models.SongParams
 import com.kirdevelopment.worship47andorid2.models.Translator
 import kotlinx.coroutines.*
 
@@ -17,6 +18,7 @@ class HomeViewModel : ViewModel() {
     private val mainInteractor = MainInteractor()
     var songs: ArrayList<Result> = ArrayList()
     var nextSongs: ArrayList<Result> = ArrayList()
+    val filterParms: MutableLiveData<SongParams> = MutableLiveData()
     private val lastPage = "0"
 
     // получить первые песни
@@ -50,7 +52,7 @@ class HomeViewModel : ViewModel() {
             songs.addAll(mainInteractor.getAllSongs(token))
 
             for (i in songs) {
-                if(database.songsDao().getAllSongs().map { db -> db.songId}.contains(i.id))
+                if (database.songsDao().getAllSongs().map { db -> db.songId }.contains(i.id))
                     database.songsDao().updateSongs(parseSongsToDb(i))
                 else
                     database.songsDao().insertSongs(parseSongsToDb(i))
@@ -61,7 +63,7 @@ class HomeViewModel : ViewModel() {
 
                 // добавляет в базу данных песни
                 for (i in nextSongs) {
-                    if(database.songsDao().getAllSongs().map { db -> db.songId}.contains(i.id))
+                    if (database.songsDao().getAllSongs().map { db -> db.songId }.contains(i.id))
                         database.songsDao().updateSongs(parseSongsToDb(i))
                     else
                         database.songsDao().insertSongs(parseSongsToDb(i))
