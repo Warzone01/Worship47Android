@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--сортировка по тональности-->
+            <LinearLayout
+                android:id="@+id/ll_chords_sort_expandable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/chords_for_sort"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow_chord_sort"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="@string/chords_for_sort"
+                    android:src="@drawable/ic_arrow_down"
+                    app:tint="@color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_chords_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_c"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/c"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_c"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_d"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/d"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_d"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_e"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/e"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_e"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_f"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/f"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_f"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_g"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/g"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_g"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/a"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_a"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_chord_b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/b"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_b"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/black" />
+
+            <!--сортировка по категории-->
+            <LinearLayout
+                android:id="@+id/ll_categories_sort_expandable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginStart="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/categories_for_sort"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow_categories_sort"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="@string/chords_for_sort"
+                    android:src="@drawable/ic_arrow_down"
+                    app:tint="@color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_category_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/ll_category_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/main_songs"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_main"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_category_christmas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/christmas_songs"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_christmas"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_category_easter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/easter_songs"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_easter"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_category_children"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/children_songs"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_children"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:visibility="gone"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/black" />
+
+            <!--сортировка по сложности-->
+            <LinearLayout
+                android:id="@+id/ll_level_sort_expandable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/level_for_sort"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow_level_sort"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="@string/chords_for_sort"
+                    android:src="@drawable/ic_arrow_down"
+                    app:tint="@color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_level_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/ll_level_easy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/easy"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_easy"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_level_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/medium"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_medium"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_level_hard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu_bold"
+                        android:text="@string/hard"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_hard"
+                        android:layout_width="30dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="3dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/black" />
+
+            <!--сортировка по наличию перевода-->
+            <LinearLayout
+                android:id="@+id/ll_translate_sort_checkable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="@string/is_translated_for_sort"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_translated"
+                    android:layout_width="30dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="3dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/black" />
+
+            <!--сортировка по алфавиту-->
+            <LinearLayout
+                android:id="@+id/ll_alphabet_sort_checkable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:maxLines="1"
+                    android:text="@string/is_need_sort_for_alphabet"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_alphabet"
+                    android:layout_width="30dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="3dp"
+                    android:checked="true" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_btn_clear_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/appbar_color"
+                    android:elevation="5dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:padding="8dp"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/clear_filter"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tv_btn_apply_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main_orange"
+                    android:elevation="5dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:padding="8dp"
+                    android:text="@string/apply_filter"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

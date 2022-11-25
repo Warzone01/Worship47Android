@@ -1,7 +1,6 @@
 package com.kirdevelopment.worship47andorid2.views
 
 import android.content.Context
-import android.media.Image
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +40,10 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         return findViewById<LinearLayout>(R.id.iv_info).clicks()
     }
 
+    fun setSortClick(): Observable<Unit> {
+        return findViewById<ImageView>(R.id.iv_sort_songs).clicks()
+    }
+
     // установить заголовок
     fun setHeader(text: String) {
         findViewById<TextView>(R.id.tv_appbar_header_text).text = text
@@ -75,10 +78,12 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         val subtitle = findViewById<TextView>(R.id.tv_appbar_subtitle_text)
         val rightButton = findViewById<ImageView>(R.id.iv_info)
         val leftButton = findViewById<ImageView>(R.id.iv_menu)
+        val filterButton = findViewById<ImageView>(R.id.iv_sort_songs)
 
         if (isHome) {
             marker.visibility = View.VISIBLE
-            leftButton.visibility = View.GONE
+            leftButton.visibility = View.VISIBLE
+            filterButton.visibility = View.VISIBLE
             leftButton.setBackgroundResource(R.drawable.ic_menu)
             setSearchIcon()
             title.text = titleText
@@ -89,6 +94,7 @@ class AppBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             leftButton.visibility = View.VISIBLE
             subtitle.visibility = View.VISIBLE
             rightButton.visibility = View.VISIBLE
+            filterButton.visibility = View.GONE
             leftButton.setImageResource(R.drawable.ic_back)
             rightButton.setImageResource(R.drawable.ic_info)
             title.text = titleText

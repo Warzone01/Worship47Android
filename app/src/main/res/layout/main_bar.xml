@@ -76,6 +76,16 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/iv_sort_songs"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_filter"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/iv_info"
+        app:layout_constraintTop_toTopOf="@id/iv_info"
+        app:layout_constraintBottom_toBottomOf="@id/iv_info"/>
+
+    <ImageView
         android:id="@+id/iv_info"
         android:layout_width="24dp"
         android:layout_height="24dp"

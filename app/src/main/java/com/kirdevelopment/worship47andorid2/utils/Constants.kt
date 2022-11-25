@@ -33,4 +33,22 @@ object Constants {
     const val LINK_BUILDER = "https://youtu.be/"
     const val IMAGE_LINK_YOUTUBE = "https://img.youtube.com/vi/"
     const val DEFAULT_IMAGE = "/hqdefault.jpg"
+
+    /**
+     * фильтрация
+     */
+
+    // тональности
+    const val C_CHORD = "C"
+    const val D_CHORD = "D"
+    const val E_CHORD = "E"
+    const val F_CHORD = "F"
+    const val G_CHORD = "G"
+    const val A_CHORD = "A"
+    const val B_CHORD = "B"
+
+    // сложность
+    const val EASY_LEVEL = "easy"
+    const val MEDIUM_LEVEL = "medium"
+    const val HARD_LEVEL = "hard"
 }

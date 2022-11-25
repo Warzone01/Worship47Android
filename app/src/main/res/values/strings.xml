@@ -21,10 +21,10 @@
     <string name="third_hello_title">Разделение по категориям</string>
     <string name="third_hello_description">Песни разделены по категорям, благодаря чему удобно найти нужную</string>
     <string name="all_songs">Все песни</string>
-    <string name="main_songs">Основные песни</string>
-    <string name="christmas_songs">Рождественские песни</string>
-    <string name="easter_songs">Пасхальные песни</string>
-    <string name="children_songs">Детские песни</string>
+    <string name="main_songs">Основные</string>
+    <string name="christmas_songs">Рождественские</string>
+    <string name="easter_songs">Пасхальные</string>
+    <string name="children_songs">Детские</string>
     <string name="author">Автор: %s</string>
     <string name="empty_list">Список песен пуст</string>
     <string name="ru_text">Русский</string>
@@ -38,4 +38,30 @@
     <string name="download_presentation">Скачать презентацию</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="wait_until_downloading_end">Дождитесь окончания загрузки песен</string>
+
+    <!--фильтрация-->
+    <string name="select_for_filter">Выберете параметры для фильтрации</string>
+    <string name="categories_for_sort">Категориии</string>
+    <string name="chords_for_sort">Тональность</string>
+    <string name="c">C(До)</string>
+    <string name="d">D(Ре)</string>
+    <string name="e">E(Ми)</string>
+    <string name="f">F(Фа)</string>
+    <string name="g">G(Соль)</string>
+    <string name="a">A(Ля)</string>
+    <string name="b">B(Си)</string>
+
+    <string name="is_translated_for_sort">Только перевод</string>
+
+    <string name="level_for_sort">Сложность</string>
+    <string name="easy">Лёгкие</string>
+    <string name="medium">Средние</string>
+    <string name="hard">Сложные</string>
+
+    <string name="clear_filter">очистить</string>
+    <string name="apply_filter">применить</string>
+
+    <string name="is_need_sort_for_alphabet">Сортировать по алфавиту</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

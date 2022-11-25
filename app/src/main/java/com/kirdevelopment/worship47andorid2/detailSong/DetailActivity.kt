@@ -26,6 +26,10 @@ class DetailActivity : AppCompatActivity() {
     var song: SongsEntity? = null
     private val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
     private var fragment: Fragment? = null
+    private var isRuTextNotEmpty = false
+    private var isEngTextNotEmpty = false
+    private var isChordTextNotEmpty = false
+    private var animationDuration = 200L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +45,7 @@ class DetailActivity : AppCompatActivity() {
         model.getSong(this)
         super.onResume()
 
-        if(fragment == null) {
+        if (fragment == null) {
             fragment = SongInfoFragment.newInstance(
                 category = StringConverter.fromStringToList(song?.songCategorySlug ?: "")
                     .toMutableList() as ArrayList<String>,
@@ -74,7 +78,7 @@ class DetailActivity : AppCompatActivity() {
         binding.homeAppbar.setLoginClicks()
             .throttleFirst(300, TimeUnit.MILLISECONDS)
             .autoDispose(scope()).subscribe {
-                binding.songInfoFragment.visibility = View.VISIBLE
+                animateInfoFragment(isHide = false)
             }
 
         initTabs()
@@ -82,7 +86,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (binding.songInfoFragment.isVisible) {
-            binding.songInfoFragment.visibility = View.GONE
+            animateInfoFragment(isHide = true)
             return
         }
 
@@ -96,16 +100,28 @@ class DetailActivity : AppCompatActivity() {
             lifecycle = lifecycle,
             song = song ?: SongsEntity()
         )
+
+        // проверяем наличие текста, чтобы если нет отключить вкладку
+        if (song?.songTextRu.isNullOrBlank()) {
+            isRuTextNotEmpty = false
+            binding.tabRu.visibility = View.GONE
+        }
+        if (song?.songTextEng.isNullOrBlank()) {
+            isEngTextNotEmpty = false
+            binding.tabEng.visibility = View.GONE
+        }
+        if (song?.songChords.isNullOrBlank()) {
+            isChordTextNotEmpty = false
+            binding.tabChord.visibility = View.GONE
+        }
+
         binding.vpSongText.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                setFocusedTab(position)
 
                 when (position) {
                     0 -> {
-                        binding.tabRu.setFocused()
-                        binding.tabEng.setUnfocused()
-                        binding.tabChord.setUnfocused()
-
                         binding.tabEng.setOnClickListener {
                             binding.vpSongText.currentItem = 1
                         }
@@ -116,10 +132,6 @@ class DetailActivity : AppCompatActivity() {
                     }
 
                     1 -> {
-                        binding.tabRu.setUnfocused()
-                        binding.tabEng.setFocused()
-                        binding.tabChord.setUnfocused()
-
                         binding.tabRu.setOnClickListener {
                             binding.vpSongText.currentItem = 0
                         }
@@ -146,6 +158,76 @@ class DetailActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    // установить активную вкладку
+    private fun setFocusedTab(position: Int) {
+        when (position) {
+            0 -> {
+                when {
+                    !song?.songTextRu.isNullOrBlank() -> {
+                        binding.tabRu.setFocused()
+                        binding.tabEng.setUnfocused()
+                        binding.tabChord.setUnfocused()
+                    }
+
+                    song?.songTextRu.isNullOrBlank() && !song?.songTextEng.isNullOrBlank() -> {
+                        binding.tabRu.setUnfocused()
+                        binding.tabEng.setFocused()
+                        binding.tabChord.setUnfocused()
+                    }
+
+                    else -> {
+                        binding.tabRu.setUnfocused()
+                        binding.tabEng.setUnfocused()
+                        binding.tabChord.setFocused()
+                    }
+                }
+            }
+            1 -> {
+                when {
+                    !song?.songTextEng.isNullOrBlank() -> {
+                        binding.tabRu.setUnfocused()
+                        binding.tabEng.setFocused()
+                        binding.tabChord.setUnfocused()
+                    }
+
+                    else -> {
+                        binding.tabRu.setUnfocused()
+                        binding.tabEng.setUnfocused()
+                        binding.tabChord.setFocused()
+                    }
+                }
+            }
+            else -> {
+                binding.tabRu.setUnfocused()
+                binding.tabEng.setUnfocused()
+                binding.tabChord.setFocused()
+            }
+        }
+    }
+
+    // анимирует фрагмент с информацией
+    private fun animateInfoFragment(isHide: Boolean) {
+        binding.songInfoFragment.apply {
+            if (isHide) {
+                scaleX = 1f
+                scaleY = 1f
+                animate()
+                    .setDuration(animationDuration)
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .withEndAction { visibility = View.GONE }
+            } else {
+                visibility = View.VISIBLE
+                scaleX = 0f
+                scaleY = 0f
+                animate()
+                    .setDuration(animationDuration)
+                    .scaleX(1f)
+                    .scaleY(1f)
+            }
+        }
     }
 
     // устанавливает текст для вкладок

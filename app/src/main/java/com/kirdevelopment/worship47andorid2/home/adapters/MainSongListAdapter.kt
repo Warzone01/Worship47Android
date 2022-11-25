@@ -10,7 +10,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.kirdevelopment.worship47andorid2.R
+import com.kirdevelopment.worship47andorid2.filterCore.FilterCore
 import com.kirdevelopment.worship47andorid2.models.Result
+import com.kirdevelopment.worship47andorid2.models.SongParams
 import com.kirdevelopment.worship47andorid2.utils.Constants.ALL_SONGS
 
 class MainSongListAdapter(
@@ -42,15 +44,55 @@ class MainSongListAdapter(
         notifyDataSetChanged()
     }
 
-    // поиск песен
-    fun searchSong(text: String, songsForSort: ArrayList<Result>) {
+    // сортировка песен по ключевым параметрам
+    fun sortSongsForParams(songsForSort: ArrayList<Result>, params: SongParams?, category: String) {
         songs.clear()
-        songs.addAll(songsForSort.filter {
-            it.title.lowercase().contains(text.lowercase())
-                    || it.title_eng?.lowercase()?.contains(text.lowercase()) ?: false
-                    || it.text.lowercase().contains(text.lowercase())
-                    || it.text_eng?.lowercase()?.contains(text.lowercase()) ?: false
-        })
+
+        // если сортировка пуста
+        if (params?.isTranslated != true
+            && params?.categories.isNullOrEmpty()
+            && params?.chords.isNullOrEmpty()
+            && params?.level.isNullOrEmpty()
+        ) {
+            sortedSongs(category = category, songsForSort = songsForSort)
+            return
+        } else {
+            FilterCore.filterByList(
+                songListForAdd = songs,
+                songListForSort = songsForSort,
+                params = params,
+                category = category
+            )
+        }
+
+        notifyDataSetChanged()
+    }
+
+    // поиск песен
+    fun searchSong(
+        text: String,
+        songsForSort: ArrayList<Result>,
+        params: SongParams?,
+        category: String
+    ) {
+        songs.clear()
+
+        if (params != SongParams() || category != ALL_SONGS) {
+            FilterCore.filterByListToSearch(
+                songListForAdd = songs,
+                songListForSort = songsForSort,
+                params = params,
+                category = category,
+                text = text
+            )
+        } else {
+            songs.addAll(songsForSort.filter {
+                it.title.lowercase().contains(text.lowercase())
+                        || it.title_eng?.lowercase()?.contains(text.lowercase()) ?: false
+                        || it.text.lowercase().contains(text.lowercase())
+                        || it.text_eng?.lowercase()?.contains(text.lowercase()) ?: false
+            })
+        }
         notifyDataSetChanged()
     }
 
