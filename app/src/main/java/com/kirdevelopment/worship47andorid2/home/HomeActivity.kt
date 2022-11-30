@@ -201,15 +201,17 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
 
         // следит за обновлением текста в строке поиск
         RxTextView.afterTextChangeEvents(binding.etSearch)
-            .debounce(500, TimeUnit.MILLISECONDS)
+            .debounce(200, TimeUnit.MILLISECONDS)
             .map { it.editable().toString() }
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .autoDispose(scope())
             .subscribe {
                 if (it.isNotEmpty()) {
+                    binding.icClearSearch.visibility = View.VISIBLE
                     searchSong(it)
                 } else {
+                    binding.icClearSearch.visibility = View.GONE
                     if (songParams == SongParams()) {
                         updateSongs()
                     }
@@ -225,6 +227,12 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
 
     // устанавливает клики
     private fun setClicks() {
+
+        // очищает строку поиска
+        binding.icClearSearch.setOnClickListener {
+            binding.etSearch.setText("")
+        }
+
         binding.topPopup.apply {
 
             // слушает клик вне попапа
