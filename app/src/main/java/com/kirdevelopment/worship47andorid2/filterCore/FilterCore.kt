@@ -11,7 +11,7 @@ import com.kirdevelopment.worship47andorid2.models.Result as res
  */
 object FilterCore {
 
-    private val regex = "[^\\p{L}\\p{N}]+".toRegex()
+    private val regex = "[^A-Za-zА-Яа-я0-9]".toRegex()
 
     // основная функция соритровки
     fun filterByList(
@@ -52,7 +52,7 @@ object FilterCore {
     ) {
         val replacedText = text.replace(regex, "")
 
-        // фильтрует основной список песен
+        // фильтрует основной список песен учитывая поиск
         songListForAdd.addAll(
             songListForSort
                 .filter {
