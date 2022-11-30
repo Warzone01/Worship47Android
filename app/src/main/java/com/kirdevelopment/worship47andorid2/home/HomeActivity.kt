@@ -6,14 +6,19 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kirdevelopment.worship47andorid2.R
+import com.kirdevelopment.worship47andorid2.auth.AuthActivity
 import com.kirdevelopment.worship47andorid2.databinding.ActivityHomeBinding
 import com.kirdevelopment.worship47andorid2.detailSong.DetailActivity
 import com.kirdevelopment.worship47andorid2.home.adapters.MainSongListAdapter
@@ -31,16 +36,21 @@ import com.kirdevelopment.worship47andorid2.utils.Constants.SONG_ID
 import com.kirdevelopment.worship47andorid2.utils.Constants.TOKEN
 import com.kirdevelopment.worship47andorid2.utils.KeyboardUtils
 import com.kirdevelopment.worship47andorid2.filterCore.SortSongs
+import com.kirdevelopment.worship47andorid2.leftMenu.LeftMenuFragment
+import com.kirdevelopment.worship47andorid2.leftMenu.LmClicks
+import com.kirdevelopment.worship47andorid2.utils.AppState
 import com.kirdevelopment.worship47andorid2.views.TopPopupView
 import com.skydoves.balloon.*
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.random.Random
 
-class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
+class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmClicks {
 
     private lateinit var binding: ActivityHomeBinding
     private var model = HomeViewModel()
@@ -51,6 +61,10 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
     private lateinit var adapter: MainSongListAdapter
     private var songClickedPosition: Int = -1
     private var animationDuration = 200L
+
+    private var fragment: Fragment? = null
+    private val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+
     var songParams: SongParams = SongParams()
 
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -74,6 +88,13 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
 
     override fun onResume() {
         super.onResume()
+
+        if (fragment == null) {
+            fragment = LeftMenuFragment(this)
+            transaction
+                .replace(R.id.main_fragment_container, fragment as LeftMenuFragment)
+                .commit()
+        }
 
         // если песен ещё нет, то запрашивает первые 10 песен
         if (songs.isEmpty()) {
@@ -110,10 +131,14 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         // если открыт топ попап закрываем его
         if (binding.homeAppbar.isPopupOpen) {
             binding.topPopup.apply {
-                binding.homeAppbar.isPopupOpen = false
-                animatePopup(this@HomeActivity.binding.topPopup, true)
-                binding.homeAppbar.setHeaderMarker()
+                closeTopPopup()
             }
+            return
+        }
+
+        // если открыто левое меню
+        if (AppState.isLeftMenuOpen) {
+            closeLm()
             return
         }
         super.onBackPressed()
@@ -121,11 +146,49 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
 
     override fun onSongClicked(song: Result, position: Int) {
         super.onSongClicked(song, position)
+        this@HomeActivity.binding.etSearch.hideKeyboard()
         songClickedPosition = position
         val intent = Intent(this@HomeActivity, DetailActivity::class.java)
         intent.putExtra(SONG_ID, song.id)
         intent.putExtra(SONG, model.parseSongsToDb(song))
         startActivity(intent)
+    }
+
+    override fun clickRandomBtn() {
+        closeLm()
+
+        // выбирает случайную песню
+        kotlin.runCatching {
+            val song =
+                model.songsList.value?.get(Random.nextInt(0, model.songsList.value?.size ?: 0))
+            val intent = Intent(this@HomeActivity, DetailActivity::class.java)
+            intent.putExtra(SONG_ID, song?.id)
+            intent.putExtra(SONG, song?.let { model.parseSongsToDb(it) })
+            startActivity(intent)
+        }.onFailure {
+            Log.e("Ошибка рандома", it.localizedMessage)
+        }
+    }
+
+    override fun clickExitBtn() {
+        closeLm()
+
+        // выход из аккаунта, к регистрации/авторизации
+        if (mKey?.getString(TOKEN, "") != "") {
+            val editor = mKey?.edit()
+            editor?.remove(TOKEN)
+            editor?.clear()
+            editor?.apply()
+        }
+        startActivity(
+            Intent(this@HomeActivity, AuthActivity::class.java)
+        )
+        finish()
+    }
+
+    override fun clickPadding() {
+        super.clickPadding()
+        closeLm()
     }
 
     // настраивает поиск по песням
@@ -136,16 +199,28 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
             searchSong(binding.etSearch.text.toString())
         }
 
-        // следит за обновлением текста в строке поиска
-        binding.etSearch.doOnTextChanged { text, _, _, count ->
-            if (count >= 1) {
-                searchSong(text.toString())
-            } else {
-                if (songParams == SongParams()) {
-                    updateSongs()
+        // следит за обновлением текста в строке поиск
+        RxTextView.afterTextChangeEvents(binding.etSearch)
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .map { it.editable().toString() }
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDispose(scope())
+            .subscribe {
+                if (it.isNotEmpty()) {
+                    searchSong(it)
+                } else {
+                    if (songParams == SongParams()) {
+                        updateSongs()
+                    }
+                }
+
+                if (!it.isNullOrBlank() && songs.isEmpty()) {
+                    binding.tvEmptyListStub.visibility = View.VISIBLE
+                } else {
+                    binding.tvEmptyListStub.visibility = View.GONE
                 }
             }
-        }
     }
 
     // устанавливает клики
@@ -157,9 +232,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
-                    binding.homeAppbar.isPopupOpen = false
-                    animatePopup(this@HomeActivity.binding.topPopup, true)
-                    binding.homeAppbar.setHeaderMarker()
+                    closeTopPopup()
                 }
 
             // слушает клик в попапе по всем песням
@@ -312,26 +385,21 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                 .throttleFirst(300L, TimeUnit.MILLISECONDS)
                 .autoDispose(scope()).subscribe {
                     if (this@HomeActivity.binding.homeAppbar.isPopupOpen) {
-                        this@HomeActivity.binding.topPopup.apply {
-                            this@HomeActivity.binding.homeAppbar.isPopupOpen = false
-                            animatePopup(this@HomeActivity.binding.topPopup, !isPopupOpen)
-                            this@HomeActivity.binding.homeAppbar.setHeaderMarker()
-                        }
+                        closeTopPopup()
                     }
                     setSearchState(!isSearchMode)
                 }
+
+            // устанавливается клик на кнопку вызова левого меню
+            setLmClicks()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .throttleFirst(300L, TimeUnit.MILLISECONDS)
+                .autoDispose(scope()).subscribe {
+                    this@HomeActivity.binding.etSearch.hideKeyboard()
+                    AppState.isLeftMenuOpen = true
+                    animateLm(this@HomeActivity.binding.mainFragmentContainer, false)
+                }
         }
-//  этот код, чтобы можно было выйти, просто сохранён до лучших времён
-//        if (mKey?.getString(TOKEN, "") != "") {
-//            val editor = mKey?.edit()
-//            editor?.remove(TOKEN)
-//            editor?.clear()
-//            editor?.apply()
-//        }
-//        startActivity(
-//            Intent(this@HomeActivity, AuthActivity::class.java)
-//        )
-//        finish()
     }
 
     // слушатель изменения положения скролла
@@ -426,10 +494,9 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
         }
         binding.rvMainSongList.scrollToPosition(0)
         if (songs.isNullOrEmpty()) {
-            binding.tvWaitForDownloading.text = getString(R.string.empty_list)
-            binding.tvWaitForDownloading.visibility = View.VISIBLE
+            binding.tvEmptyListStub.visibility = View.VISIBLE
         } else {
-            binding.tvWaitForDownloading.visibility = View.GONE
+            binding.tvEmptyListStub.visibility = View.GONE
         }
     }
 
@@ -491,6 +558,43 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils {
                     .interpolator = LinearInterpolator()
             }
         }
+    }
+
+    // устанавливает состояние левого меню
+    private fun animateLm(fragment: FragmentContainerView, isHide: Boolean) {
+        fragment.apply {
+            if (!isHide) {
+                closeTopPopup()
+                visibility = View.VISIBLE
+                translationX = -800f
+                animate()
+                    .translationX(0f)
+                    .setDuration(animationDuration)
+                    .interpolator = LinearInterpolator()
+            } else {
+                translationX = 0f
+                animate()
+                    .withEndAction { visibility = View.GONE }
+                    .translationX(-800f)
+                    .setDuration(animationDuration)
+                    .interpolator = LinearInterpolator()
+            }
+        }
+    }
+
+    // закрывает верхний попап
+    private fun closeTopPopup() {
+        binding.topPopup.apply {
+            binding.homeAppbar.isPopupOpen = false
+            animatePopup(this@HomeActivity.binding.topPopup, true)
+            binding.homeAppbar.setHeaderMarker()
+        }
+    }
+
+    // закрывает левое меню
+    private fun closeLm() {
+        AppState.isLeftMenuOpen = false
+        animateLm(binding.mainFragmentContainer, true)
     }
 
     // закрыть или открыть поиск
