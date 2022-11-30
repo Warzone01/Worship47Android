@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
@@ -24,6 +26,7 @@ class AuthActivity : AppCompatActivity() {
     private val model = AuthViewModel()
     private var mKey: SharedPreferences? = null
     private val registrationLink = "https://worship47.tk/accounts/signup/"
+    private var isPasswordVisible: Boolean = false
 
     var dp1 = 0f
     var screenKey = 0
@@ -64,6 +67,12 @@ class AuthActivity : AppCompatActivity() {
                     else -> auth()
                 }
             }
+        }
+
+        // слушатель на кнопку показа пароля
+        binding.icPasswordVisibility.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            setPasswordVisibility()
         }
 
         binding.btnRegistration.setOnClickListener {
@@ -155,43 +164,43 @@ class AuthActivity : AppCompatActivity() {
     // слушает фокус полей ввода
     private fun initFocus() {
         binding.etEmail.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                binding.underlineEmail.setBackgroundResource(R.drawable.focused_under_line)
-            } else {
-                binding.underlineEmail.setBackgroundResource(R.drawable.under_line)
-            }
+            setUnderline(hasFocus, binding.underlineEmail)
         }
 
         binding.etName.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                binding.underlineName.setBackgroundResource(R.drawable.focused_under_line)
-            } else {
-                binding.underlineName.setBackgroundResource(R.drawable.under_line)
-            }
+            setUnderline(hasFocus, binding.underlineName)
         }
 
         binding.etFirstname.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                binding.underlineFirstname.setBackgroundResource(R.drawable.focused_under_line)
-            } else {
-                binding.underlineFirstname.setBackgroundResource(R.drawable.under_line)
-            }
+            setUnderline(hasFocus, binding.underlineFirstname)
         }
 
         binding.etPassword.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                binding.underlinePassword.setBackgroundResource(R.drawable.focused_under_line)
-            } else {
-                binding.underlinePassword.setBackgroundResource(R.drawable.under_line)
-            }
+            setUnderline(hasFocus, binding.underlinePassword)
         }
 
         binding.etPasswordRepeat.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                binding.underlinePasswordRepeat.setBackgroundResource(R.drawable.focused_under_line)
-            } else {
-                binding.underlinePasswordRepeat.setBackgroundResource(R.drawable.under_line)
-            }
+            setUnderline(hasFocus, binding.underlinePasswordRepeat)
+        }
+    }
+
+    // изменяет видимость пароля
+    private fun setPasswordVisibility() {
+        if (isPasswordVisible) {
+            binding.icPasswordVisibility.setBackgroundResource(R.drawable.ic_visibility_off)
+            binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT
+        } else {
+            binding.icPasswordVisibility.setBackgroundResource(R.drawable.ic_visibility)
+            binding.etPassword.inputType = 129
+        }
+    }
+
+    // установить звет индикации
+    private fun setUnderline(hasFocus: Boolean, view: View) {
+        if (hasFocus) {
+            view.setBackgroundResource(R.drawable.focused_under_line)
+        } else {
+            view.setBackgroundResource(R.drawable.under_line)
         }
     }
 
