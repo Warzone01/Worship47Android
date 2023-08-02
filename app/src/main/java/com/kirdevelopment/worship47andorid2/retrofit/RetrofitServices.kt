@@ -24,4 +24,9 @@ interface RetrofitServices {
     fun getNextSongsList(@Header("Authorization") token: String,
                          @Query("page") page: Int): Call<SongObject>
 
+    // обновляет песни, передавая дату последнего сохранения
+    @GET("/api/songs-ro/")
+    fun updateSongsFrom(@Header("Authorization") token: String,
+                        @Query("page") page: Int,
+                        @Query("update_from") date: String): Call<SongObject>
 }

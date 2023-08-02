@@ -10,6 +10,7 @@ import android.text.InputType
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.widget.LinearLayout
 import com.kirdevelopment.worship47andorid2.R
 import com.kirdevelopment.worship47andorid2.databinding.ActivityAuthBinding

@@ -2,7 +2,6 @@ package com.kirdevelopment.worship47andorid2.interactors
 
 import android.util.Log
 import com.kirdevelopment.worship47andorid2.retrofit.Common
-import retrofit2.await
 
 class AuthInteractor {
     private val services = Common.retrofitServices
@@ -13,8 +12,9 @@ class AuthInteractor {
             return services.getAuthToken(
                 username = login,
                 password = password
-            ).await().token
+            ).execute().body()?.token
         }.onFailure {
+            Thread.sleep(1000)
             Log.e("Ошибка", it.stackTraceToString())
             return null
         }

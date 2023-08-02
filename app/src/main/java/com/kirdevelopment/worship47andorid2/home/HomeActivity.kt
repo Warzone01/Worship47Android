@@ -3,6 +3,7 @@ package com.kirdevelopment.worship47andorid2.home
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -39,24 +41,36 @@ import com.kirdevelopment.worship47andorid2.filterCore.SortSongs
 import com.kirdevelopment.worship47andorid2.leftMenu.LeftMenuFragment
 import com.kirdevelopment.worship47andorid2.leftMenu.LmClicks
 import com.kirdevelopment.worship47andorid2.utils.AppState
+import com.kirdevelopment.worship47andorid2.utils.Constants.UPDATE_DATE
+import com.kirdevelopment.worship47andorid2.utils.Events
 import com.kirdevelopment.worship47andorid2.views.TopPopupView
 import com.skydoves.balloon.*
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import java.sql.Time
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmClicks {
+class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmClicks, Events {
 
     private lateinit var binding: ActivityHomeBinding
     private var model = HomeViewModel()
     private var category = ALL_SONGS
     private var headerText = ALL_SONGS
     private var mKey: SharedPreferences? = null
+    private var lastUpdateDateSP: SharedPreferences? = null
+    private var lastUpdateDate: String = ""
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val date = LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyyyy"))
     private var songs = ArrayList<Result>()
     private lateinit var adapter: MainSongListAdapter
     private var songClickedPosition: Int = -1
@@ -77,17 +91,18 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (songs.isNotEmpty()) updateAllSongs()
-
         linearLayoutManager = LinearLayoutManager(this)
         adapter = MainSongListAdapter(songs, this)
         mKey = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         binding.rvMainSongList.layoutManager = linearLayoutManager
         binding.rvMainSongList.adapter = adapter
+        lastUpdateDateSP = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+
     }
 
     override fun onResume() {
         super.onResume()
+        lastUpdateDate = lastUpdateDateSP?.getString(UPDATE_DATE, "") ?: ""
 
         if (fragment == null) {
             fragment = LeftMenuFragment(this)
@@ -102,11 +117,18 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
             binding.homePreloader
         }
 
+        if (lastUpdateDateSP?.getString(UPDATE_DATE, "") != ""
+            || lastUpdateDateSP?.getString(UPDATE_DATE, "") != null
+            || lastUpdateDate != ""
+        ) {
+            updateAllSongs()
+        }
+
         setClicks()
         setScrollListener()
 
         // следит за списком песен и обновляет их
-        model.songsList.observe(this, {
+        model.songsList.observe(this) {
             it.let { result ->
                 endLoading()
                 if (SortSongs.checkIsFilterNotEmpty()) {
@@ -116,7 +138,7 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
                 }
 
             }
-        })
+        }
 
         // изменить название в шапке
         binding.homeAppbar.changeMainBar(
@@ -189,6 +211,22 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
     override fun clickPadding() {
         super.clickPadding()
         closeLm()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun changeLastUpdateTime() {
+        super.changeLastUpdateTime()
+
+        lastUpdateDate = date
+        val editor = lastUpdateDateSP?.edit()
+        editor?.putString(UPDATE_DATE, date.toString())
+        editor?.apply()
+
+        MainScope().launch(Dispatchers.Main) {
+            model.songsList.value?.let {
+                sortSongs()
+            }
+        }
     }
 
     // настраивает поиск по песням
@@ -427,18 +465,28 @@ class HomeActivity : AppCompatActivity(), SongClickListener, KeyboardUtils, LmCl
     // получить песни
     private fun getFirstSongs() {
         if (mKey?.getString(TOKEN, "") != "") {
-            model.getFirstSongs(mKey?.getString(TOKEN, "") ?: "", applicationContext)
+            model.getFirstSongs(mKey?.getString(TOKEN, "") ?: "",this, applicationContext)
         } else {
-            model.getFirstSongs(intent.getStringExtra(TOKEN) ?: "", applicationContext)
+            model.getFirstSongs(intent.getStringExtra(TOKEN) ?: "", this, applicationContext)
         }
     }
 
     // обновить песни
     private fun updateAllSongs() {
         if (mKey?.getString(TOKEN, "") != "") {
-            model.updateSongs(mKey?.getString(TOKEN, "") ?: "", applicationContext)
+            model.updateSongs(
+                token = mKey?.getString(TOKEN, "") ?: "",
+                date = lastUpdateDate,
+                context = applicationContext,
+                events = this
+            )
         } else {
-            model.updateSongs(intent.getStringExtra(TOKEN) ?: "", applicationContext)
+            model.updateSongs(
+                token = intent.getStringExtra(TOKEN) ?: "",
+                context = applicationContext,
+                date = lastUpdateDate,
+                events = this
+            )
         }
     }
 
