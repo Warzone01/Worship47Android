@@ -14,6 +14,7 @@ object Constants {
 
     // параметры для intent
     const val TOKEN = "token"
+    const val UPDATE_DATE = "update_date"
     const val SONG_ID = "song_id"
     const val SONG = "song"
 
@@ -51,4 +52,7 @@ object Constants {
     const val EASY_LEVEL = "easy"
     const val MEDIUM_LEVEL = "medium"
     const val HARD_LEVEL = "hard"
+
+    // Errors
+    const val FAILED_TO_CONNECT = "Failed to connect to worship47.tk"
 }

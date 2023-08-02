@@ -18,7 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_header"
             android:layout_width="match_parent"
@@ -35,7 +34,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@string/app_name" />
 
             <!--блок привествия-->
             <FrameLayout
@@ -119,7 +119,8 @@
                 android:background="@null"
                 android:textSize="18sp"
                 android:inputType="textEmailAddress"
-                android:hint="@string/email"/>
+                android:hint="@string/email"
+                android:importantForAutofill="no" />
 
             <View
                 android:id="@+id/underline_email"

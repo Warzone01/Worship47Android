@@ -1,6 +1,7 @@
 package com.kirdevelopment.worship47andorid2.home
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kirdevelopment.worship47andorid2.database.SongDatabase
@@ -11,23 +12,27 @@ import com.kirdevelopment.worship47andorid2.models.Category
 import com.kirdevelopment.worship47andorid2.models.Result
 import com.kirdevelopment.worship47andorid2.models.SongParams
 import com.kirdevelopment.worship47andorid2.models.Translator
+import com.kirdevelopment.worship47andorid2.utils.Events
 import kotlinx.coroutines.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HomeViewModel : ViewModel() {
     val songsList: MutableLiveData<ArrayList<Result>> = MutableLiveData()
     private val mainInteractor = MainInteractor()
     var songs: ArrayList<Result> = ArrayList()
+    var songsUpdate: ArrayList<Result> = ArrayList()
     var nextSongs: ArrayList<Result> = ArrayList()
     val filterParms: MutableLiveData<SongParams> = MutableLiveData()
-    private val lastPage = "0"
+    private val lastPage = 0
 
     // получить первые песни
-    fun getFirstSongs(token: String, context: Context) {
+    fun getFirstSongs(token: String, events: Events, context: Context) {
         val database: SongDatabase = SongDatabase.getDatabase(context)
         MainScope().launch(Dispatchers.IO) {
             val songsDb = database.songsDao().getAllSongs()
             if (songsDb.isEmpty()) {
-                songs.addAll(mainInteractor.getAllSongs(token))
+                mainInteractor.getAllSongs(token)?.let { songs.addAll(it) }
                 for (i in songs) {
                     database.songsDao().insertSongs(parseSongsToDb(i))
                 }
@@ -39,6 +44,7 @@ class HomeViewModel : ViewModel() {
                         songs.add(parseDBSongsToStore(i))
                     }
                     songsList.value = songs
+                    events.changeLastUpdateTime()
                     songsList.notifyObserver()
                 }
             }
@@ -46,49 +52,37 @@ class HomeViewModel : ViewModel() {
     }
 
     // обновляет песни
-    fun updateSongs(token: String, context: Context) {
+    fun updateSongs(token: String, date: String, context: Context, events: Events) {
         val database: SongDatabase = SongDatabase.getDatabase(context)
         MainScope().launch(Dispatchers.IO) {
-            songs.addAll(mainInteractor.getAllSongs(token))
-
-            for (i in songs) {
-                if (database.songsDao().getAllSongs().map { db -> db.songId }.contains(i.id))
-                    database.songsDao().updateSongs(parseSongsToDb(i))
-                else
-                    database.songsDao().insertSongs(parseSongsToDb(i))
+            while (mainInteractor.updatePage != null && mainInteractor.updatePage != lastPage) {
+                mainInteractor.getUpdatedSongs(
+                    token = token,
+                    lastUpdateDate = date
+                )?.let { songsUpdate.addAll(it) }
             }
-
-            while (!mainInteractor.page.isNullOrBlank() && mainInteractor.page != lastPage) {
-                nextSongs.addAll(mainInteractor.getNextSongs(token))
-
-                // добавляет в базу данных песни
-                for (i in nextSongs) {
-                    if (database.songsDao().getAllSongs().map { db -> db.songId }.contains(i.id))
-                        database.songsDao().updateSongs(parseSongsToDb(i))
-                    else
-                        database.songsDao().insertSongs(parseSongsToDb(i))
-                }
-                nextSongs.clear()
+            mainInteractor.updatePage = 1
+            for (i in songsUpdate) {
+                database.songsDao().insertSongs(parseSongsToDb(i))
             }
-
             val dbSong = database.songsDao().getAllSongs()
-            songs.clear()
             withContext(Dispatchers.Main) {
+                songs.clear()
                 for (i in dbSong) {
                     songs.add(parseDBSongsToStore(i))
                 }
                 songsList.value = songs
-                songsList.notifyObserver()
             }
-        }
+            events.changeLastUpdateTime()
+         }
     }
 
     // получить пагинацию песен
     private fun getNextSongs(token: String, context: Context) {
         val database: SongDatabase = SongDatabase.getDatabase(context)
         MainScope().launch(Dispatchers.IO) {
-            while (!mainInteractor.page.isNullOrBlank() && mainInteractor.page != lastPage) {
-                nextSongs.addAll(mainInteractor.getNextSongs(token))
+            while (mainInteractor.page != null && mainInteractor.page != lastPage) {
+                mainInteractor.getNextSongs(token)?.let { nextSongs.addAll(it) }
 
                 // добавляет в базу данных песни
                 for (i in nextSongs) {
